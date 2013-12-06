@@ -22,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import br.com.focaand.lousa.util.CameraPreview;
 import br.com.focaand.lousa.util.CameraUtil;
 
 /**
@@ -37,8 +36,6 @@ public class CameraActivity
     Button                      buttonClick;
     Camera                      camera;
     String                      fileName;
-    Activity                    act;
-    Context                     ctx;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,8 +47,6 @@ public class CameraActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	ctx = this;
-	act = this;
 	requestWindowFeature(Window.FEATURE_NO_TITLE);
 	getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
