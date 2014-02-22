@@ -1,8 +1,17 @@
 package br.com.focaand.lousa;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.view.Menu;
 import android.view.View;
@@ -10,6 +19,11 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	  Bitmap bitmap = null;	
+
+  private String selectedImagePath;
+	private static final int SELECT_PICTURE = 1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,5 +44,51 @@ public class MainActivity extends Activity {
 	    Intent intent = new Intent(this, CameraActivity.class); 
             startActivity(intent); 
 	}
+	
+	public void onGetFromGalery(View view) {
+		
+		Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), SELECT_PICTURE);
+	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                selectedImagePath = getPath(selectedImageUri);
+                
+                
+                if(bitmap != null)
+                	bitmap.recycle();
+                                
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bitmap = BitmapFactory.decodeFile(selectedImagePath, options);    	    
+        	   
+                
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                
+                Intent i = new Intent(MainActivity.this, ImageTreatmentActivity.class);
+                i.putExtra("photo" ,imageBytes);
+                startActivity(i);
+                    
+            }
+        }
+    }
+	
+	public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+	
 
 }

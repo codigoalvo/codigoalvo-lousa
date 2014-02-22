@@ -120,10 +120,7 @@ public class CameraActivity extends Activity {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
 			Intent i = new Intent(CameraActivity.this, ImageTreatmentActivity.class);
-
-            Bundle bundle = new Bundle();
-            bundle.putByteArray("photo", data);
-            i.putExtra("photo" ,bundle);
+            i.putExtra("photo" ,data);
             startActivity(i);
 		}
 	};

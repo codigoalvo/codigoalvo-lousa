@@ -38,6 +38,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="44dp"
         android:contentDescription="@string/from_galery"
+        android:onClick="onGetFromGalery"
         android:src="@drawable/ic_menu_galeria" />
 
     <TextView
