@@ -3,6 +3,7 @@ package br.com.focaand.lousa;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import br.com.focaand.lousa.util.CameraUtil;
 
 /**
@@ -33,7 +35,7 @@ public class CameraActivity extends Activity {
 
 	private static final String TAG = "focaand.lousa.CamTestActivity";
 	CameraPreview preview;
-	Button buttonClick;
+	ImageButton buttonClick;
 	Camera camera;
 	String fileName;
 
@@ -57,7 +59,7 @@ public class CameraActivity extends Activity {
 		((FrameLayout)findViewById(R.id.preview)).addView(preview);
 		preview.setKeepScreenOn(true);
 
-		buttonClick = (Button)findViewById(R.id.buttonClick);
+		buttonClick = (ImageButton)findViewById(R.id.buttonClick);
 
 		buttonClick.setOnClickListener(new OnClickListener() {
 

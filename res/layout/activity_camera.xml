@@ -27,12 +27,13 @@
                 android:layout_weight=".80"
                 android:background="#ff0000" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/buttonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/take_picture" />
+                android:contentDescription="@string/from_camera"
+                android:src="@drawable/ic_menu_camera" />
         </LinearLayout>
     </FrameLayout>
 
