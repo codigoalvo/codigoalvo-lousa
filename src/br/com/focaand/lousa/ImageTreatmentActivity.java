@@ -1,10 +1,13 @@
 package br.com.focaand.lousa;
 
 import java.io.ByteArrayOutputStream;
+
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -32,6 +35,15 @@ public class ImageTreatmentActivity extends Activity {
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 			Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
+
+			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+				// Rotaciona o bitmap para exibir quando o celular estiver em portrait
+				Matrix matrix = new Matrix();
+				matrix.postRotate(90);
+				Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+				Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+				bitmap = rotatedBitmap;
+			}
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);

@@ -93,7 +93,7 @@ public class CameraActivity extends Activity {
 		// preview.camera = Camera.open();
 		if (CameraUtil.checkCameraHardware(this)) {
 			camera = CameraUtil.getCameraInstance();
-			Size preferedSize = CameraUtil.getPreferredSupportedResolution(1000, 1300, camera.getParameters().getSupportedPictureSizes());
+			Size preferedSize = CameraUtil.getPreferredSupportedResolution(900, 1500, camera.getParameters().getSupportedPictureSizes());
 			Parameters parameters = camera.getParameters();
 			parameters.set("jpeg-quality", 70);
 			parameters.setJpegQuality(70);
