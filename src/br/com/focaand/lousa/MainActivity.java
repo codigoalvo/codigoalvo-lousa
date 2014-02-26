@@ -60,23 +60,12 @@ public class MainActivity extends Activity {
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
                 
-                
                 if(bitmap != null)
                 	bitmap.recycle();
                                 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                bitmap = BitmapFactory.decodeFile(selectedImagePath, options);    	    
-        	   
-                
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
-                byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                
                 Intent i = new Intent(MainActivity.this, ImageTreatmentActivity.class);
-                i.putExtra("photo" ,imageBytes);
+                i.putExtra("photo_path" ,selectedImagePath);
                 startActivity(i);
-                    
             }
         }
     }
