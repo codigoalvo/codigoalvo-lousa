@@ -108,12 +108,16 @@ public class CameraActivity extends Activity {
 	@Override
 	protected void onPause() {
 		if (CameraUtil.checkCameraHardware(this)) {
+		    try {
 			if (camera != null) {
-				camera.stopPreview();
-				preview.setCamera(null);
-				camera.release();
-				camera = null;
+			    camera.stopPreview();
+			    preview.setCamera(null);
+			    camera.release();
+			    camera = null;
 			}
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
 		}
 		super.onPause();
 	}
@@ -144,9 +148,16 @@ public class CameraActivity extends Activity {
 				outStream.write(data);
 				outStream.close();
 				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
-				Intent i = new Intent(CameraActivity.this, ImageTreatmentActivity.class);
-				i.putExtra("photo_path", fileName);
-				startActivity(i);
+
+				Intent returnIntent = new Intent();
+				returnIntent.putExtra("photo_path", fileName);
+				setResult(RESULT_OK,returnIntent);
+				camera.stopPreview();
+				preview.setCamera(null);
+				camera.release();
+				if (camera == CameraActivity.this.camera) 
+				    CameraActivity.this.camera = null;
+				finish();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

@@ -1,29 +1,22 @@
 package br.com.focaand.lousa;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	  Bitmap bitmap = null;	
 
-  private String selectedImagePath;
 	private static final int SELECT_PICTURE = 1;
-	
+	private static final int CAPTURE_FROM_CAMERA = 2;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +35,7 @@ public class MainActivity extends Activity {
 
 	public void onGetFromCamera(View view) {
 	    Intent intent = new Intent(this, CameraActivity.class); 
-            startActivity(intent); 
+	    startActivityForResult(intent, CAPTURE_FROM_CAMERA); 
 	}
 	
 	public void onGetFromGalery(View view) {
@@ -53,16 +46,18 @@ public class MainActivity extends Activity {
         startActivityForResult(Intent.createChooser(intent,
                 "Select Picture"), SELECT_PICTURE);
 	}
-	
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            String selectedImagePath = null;
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
-                
-                if(bitmap != null)
-                	bitmap.recycle();
-                                
+            } else if (requestCode == CAPTURE_FROM_CAMERA) {
+        	selectedImagePath = data.getStringExtra("photo_path");
+            }
+
+            if (selectedImagePath != null  &&  !selectedImagePath.isEmpty()) {
                 Intent i = new Intent(MainActivity.this, ImageTreatmentActivity.class);
                 i.putExtra("photo_path" ,selectedImagePath);
                 startActivity(i);
