@@ -22,10 +22,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import br.com.focaand.lousa.util.CameraUtil;
+import br.com.focaand.lousa.util.ImageFileUtil;
 
 /**
  * @author Cassio Reinaldo Amaral source:
@@ -37,7 +37,6 @@ public class CameraActivity extends Activity {
 	CameraPreview preview;
 	ImageButton buttonClick;
 	Camera camera;
-	String fileName;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,14 +136,12 @@ public class CameraActivity extends Activity {
 
 			try {
 				// Write to SD Card
-
-				fileName = String.format("/sdcard/focaand/%d.jpg", System.currentTimeMillis());
+				String fileName =  ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_IMAGE).getPath();
 				outStream = new FileOutputStream(fileName);
 				outStream.write(data);
 				outStream.close();
 				Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length);
 				Intent i = new Intent(CameraActivity.this, ImageTreatmentActivity.class);
-				Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 				i.putExtra("photo_path", fileName);
 				startActivity(i);
 			} catch (FileNotFoundException e) {
