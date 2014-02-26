@@ -6,13 +6,16 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Size;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * @author Cassio Reinaldo Amaral
@@ -22,7 +25,7 @@ public class CameraPreview
     extends ViewGroup
     implements SurfaceHolder.Callback {
 
-    private final String TAG = "Preview";
+    private final String TAG = "focaand.lousa.CameraPreview";
 
     SurfaceView          mSurfaceView;
     SurfaceHolder        mHolder;
@@ -37,7 +40,10 @@ public class CameraPreview
 
 	mSurfaceView = sv;
 	// addView(mSurfaceView);
+	
+    
 
+	
 	mHolder = mSurfaceView.getHolder();
 	mHolder.addCallback(this);
 	mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -205,4 +211,18 @@ public class CameraPreview
 	    mCamera.startPreview();
 	}
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+	if (this.mCamera != null)
+	    this.mCamera.autoFocus(new AutoFocusCallback() {
+		@Override
+		public void onAutoFocus(boolean arg0, Camera arg1) {
+		// Se quiser avisar visualmente que o autofocus terminou, implementar aqui
+		//    Toast.makeText(mContext, "autoFocus", Toast.LENGTH_SHORT).show();
+		}
+	    });
+        return super.dispatchTouchEvent(ev);
+    }
+    
 }
