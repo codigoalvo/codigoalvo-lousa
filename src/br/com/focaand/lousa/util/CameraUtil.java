@@ -1,8 +1,11 @@
 package br.com.focaand.lousa.util;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 
 /**
  * @author Cassio Reinaldo Amaral - cassio.amaral@gmail.com
@@ -24,13 +27,24 @@ public class CameraUtil {
 
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance() {
-	Camera c = null;
+	Camera camera = null;
 	try {
-	    c = Camera.open(); // attempt to get a Camera instance
+	    camera = Camera.open(); // attempt to get a Camera instance
 	} catch (Exception e) {
 	    // Camera is not available (in use or does not exist)
 	}
-	return c; // returns null if camera is unavailable
+	return camera; // returns null if camera is unavailable
+    }
+
+    public static Size getPreferredSupportedResolution(int widthMin, int widthMax, List<Size> supportedPictureSizes) {
+	for (int cii = supportedPictureSizes.size()-1; cii >=0; cii--) {
+	    Size size = supportedPictureSizes.get(cii);
+	    int reference = (size.width > size.height)?size.width:size.height;
+	    if (reference > widthMin  &&  reference < widthMax) {
+		return size;
+	    }
+	}
+	return supportedPictureSizes.get(supportedPictureSizes.size()-1);
     }
 
 }

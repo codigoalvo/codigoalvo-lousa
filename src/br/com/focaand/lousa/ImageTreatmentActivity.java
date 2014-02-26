@@ -12,7 +12,7 @@ import android.widget.ImageView;
 public class ImageTreatmentActivity extends Activity {
 
 	private static final String TAG = "focaand.lousa.ImageTreatmentActivity";
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -24,30 +24,21 @@ public class ImageTreatmentActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_image_treatment);
-		
+
 		try {
 			Bundle extras = getIntent().getExtras();
-//			byte[] photo = extras.getByteArray("photo");
-//			Bitmap bitmap  = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 			String fileName = extras.getString("photo_path");
-			
-			
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);    	    
-    	   
-            
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
-//            byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-			
-			
-//			Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-			
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+			Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
+
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
+
 			ImageView image = (ImageView)findViewById(R.id.imageViewImageTreatment);
 			image.setImageBitmap(bitmap);
-			
+
 //			int bitmapWidth = bitmap.getWidth();
 //			int bitmapHeight = bitmap.getHeight();
 //			for (int i = 0; i < bitmapWidth; i++) {
@@ -58,15 +49,10 @@ public class ImageTreatmentActivity extends Activity {
 //					int B = p & 0xff;
 //				}
 //			}
-			
-			
-			
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		
-		
-		
+
 	}
 
 }

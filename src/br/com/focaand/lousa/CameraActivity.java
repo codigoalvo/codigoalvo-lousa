@@ -6,12 +6,13 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -92,11 +93,13 @@ public class CameraActivity extends Activity {
 		// preview.camera = Camera.open();
 		if (CameraUtil.checkCameraHardware(this)) {
 			camera = CameraUtil.getCameraInstance();
-			camera.getParameters().setPictureSize(1280, 720);
-			camera.getParameters().setJpegQuality(40);
-			// System.out.println(camera.getParameters().getJpegQuality());
-			// System.out.println(camera.getParameters().getSupportedPictureSizes()
-			// getPictureSize().width+" / "+camera.getParameters().getPictureSize().height);
+			Size preferedSize = CameraUtil.getPreferredSupportedResolution(1000, 1300, camera.getParameters().getSupportedPictureSizes());
+			Parameters parameters = camera.getParameters();
+			parameters.set("jpeg-quality", 70);
+			parameters.setJpegQuality(70);
+			parameters.setPictureFormat(PixelFormat.JPEG);
+			parameters.setPictureSize(preferedSize.width, preferedSize.height);
+			camera.setParameters(parameters);
 			camera.startPreview();
 			preview.setCamera(camera);
 		}
