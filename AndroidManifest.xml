@@ -38,6 +38,10 @@
             android:name="br.com.focaand.lousa.ImageTreatmentActivity"
             android:label="@string/image_treatment" >
         </activity>
+        <activity
+            android:name="br.com.focaand.lousa.SegmentationActivity"
+            android:label="@string/title_activity_segmentation" >
+        </activity>
     </application>
 
 </manifest>

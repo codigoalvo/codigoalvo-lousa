@@ -8,5 +8,6 @@
     <string name="from_galery">Adquirir imagem à partir da galeria</string>
     <string name="image_treatment">Tratamento de Imagem</string>
     <string name="take_picture">Tirar Foto</string>
+    <string name="title_activity_segmentation">SegmentationActivity</string>
 
 </resources>

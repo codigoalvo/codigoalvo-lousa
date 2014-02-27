@@ -1,9 +1,15 @@
 package br.com.focaand.lousa.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -47,5 +53,25 @@ public class ImageFileUtil {
 	}
 
 	return mediaFile;
+    }
+
+    public static Bitmap getBitmap(String fileName, int deviceOrientation) {
+	BitmapFactory.Options options = new BitmapFactory.Options();
+	options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+	Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
+
+	if (deviceOrientation == Configuration.ORIENTATION_PORTRAIT) {
+		// Rotaciona o bitmap para exibir quando o celular estiver em portrait
+		Matrix matrix = new Matrix();
+		matrix.postRotate(90);
+		Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+		bitmap = rotatedBitmap;
+	}
+
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
+
+	return bitmap;
     }
 }

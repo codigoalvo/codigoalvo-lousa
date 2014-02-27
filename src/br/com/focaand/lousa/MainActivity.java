@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
             }
 
             if (selectedImagePath != null  &&  !selectedImagePath.isEmpty()) {
-                Intent i = new Intent(MainActivity.this, ImageTreatmentActivity.class);
+                Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
                 i.putExtra("photo_path" ,selectedImagePath);
                 startActivity(i);
             }

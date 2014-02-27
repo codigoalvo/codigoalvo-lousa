@@ -2,6 +2,7 @@ package br.com.focaand.lousa;
 
 import java.io.ByteArrayOutputStream;
 
+import br.com.focaand.lousa.util.ImageFileUtil;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -10,11 +11,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class ImageTreatmentActivity extends Activity {
 
 	private static final String TAG = "focaand.lousa.ImageTreatmentActivity";
+	private String fileName = "";
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -30,23 +34,9 @@ public class ImageTreatmentActivity extends Activity {
 
 		try {
 			Bundle extras = getIntent().getExtras();
-			String fileName = extras.getString("photo_path");
+			fileName = extras.getString("photo_path");
 
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-			Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
-
-			if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-				// Rotaciona o bitmap para exibir quando o celular estiver em portrait
-				Matrix matrix = new Matrix();
-				matrix.postRotate(90);
-				Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
-				Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-				bitmap = rotatedBitmap;
-			}
-
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
+			Bitmap bitmap = ImageFileUtil.getBitmap(fileName, this.getResources().getConfiguration().orientation);
 
 			ImageView image = (ImageView)findViewById(R.id.imageViewImageTreatment);
 			image.setImageBitmap(bitmap);
@@ -65,6 +55,16 @@ public class ImageTreatmentActivity extends Activity {
 			exc.printStackTrace();
 		}
 
+	}
+
+	public void onDoneTreatment(View view) {
+	    Toast.makeText(this, "Saved: "+fileName, Toast.LENGTH_SHORT).show();
+	    finish();
+	}
+
+	public void onCancelTreatment(View view) {
+	    Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show();
+	    finish();
 	}
 
 }
