@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -19,7 +20,10 @@ import android.widget.Toast;
 public class SegmentationActivity
     extends Activity implements OnTouchListener {
 
+    private int displayWidth;
+    private int displayHeight;
     private String fileName = "";
+    private Bitmap bitmapDraw;
     ImageView imageViewDraw;
     Canvas canvas;
     Paint paint;
@@ -38,10 +42,10 @@ public class SegmentationActivity
 
 	imageViewDraw = (ImageView)findViewById(R.id.imageViewDraw);
 	Display currentDisplay = getWindowManager().getDefaultDisplay();
-	float dw = currentDisplay.getWidth();
-	float dh = currentDisplay.getHeight();
+	displayWidth = currentDisplay.getWidth();
+	displayHeight = currentDisplay.getHeight();
 
-	Bitmap  bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
+	bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
 	canvas = new Canvas(bitmapDraw);
 	imageViewDraw.setImageBitmap(bitmapDraw);
 
@@ -89,6 +93,7 @@ public class SegmentationActivity
 		upx = event.getX();
 		upy = event.getY();
 		canvas.drawLine(downx, downy, upx, upy, paint);
+//		draw(downx, downy, upx, upy);
 		imageViewDraw.invalidate();
 		break;
 	    case MotionEvent.ACTION_CANCEL:
@@ -97,6 +102,12 @@ public class SegmentationActivity
 		break;
 	}
 	return true;
+    }
+
+    private void draw(float downX, float downY, float upX, float upY) {
+	Point pointDown = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
+	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
+	canvas.drawLine(pointDown.x, pointDown.y, pointUp.x, pointUp.y, paint);
     }
 
 }

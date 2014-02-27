@@ -77,8 +77,8 @@ public class ImageFileUtil {
     }
 
     public static Point getProportionalXY(int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, int inputX, int inputY) {
-	Point point = new Point();
-	//TODO: Implementar cálculo de proporção para desenhar no local correto da imagem.
-	return point;
+	int x = (int) (inputX * bitmapWidth) / screenWidth;
+	int y = (int) (inputY * bitmapHeight) / screenHeight;
+	return new Point(x, y);
     }
 }
