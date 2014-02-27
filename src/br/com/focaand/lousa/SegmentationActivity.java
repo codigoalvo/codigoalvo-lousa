@@ -5,15 +5,25 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.view.Display;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class SegmentationActivity
-    extends Activity {
+    extends Activity implements OnTouchListener {
 
     private String fileName = "";
+    ImageView imageViewDraw;
+    Canvas canvas;
+    Paint paint;
+    float downx = 0, downy = 0, upx = 0, upy = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +32,27 @@ public class SegmentationActivity
 
 	Bundle extras = getIntent().getExtras();
 	fileName = extras.getString("photo_path");
+	Bitmap bitmapPicture = ImageFileUtil.getBitmap(fileName, this.getResources().getConfiguration().orientation);
+	ImageView imageViewPicture = (ImageView)findViewById(R.id.imageViewPicture);
+	imageViewPicture.setImageBitmap(bitmapPicture);
 
-	Bitmap bitmap = ImageFileUtil.getBitmap(fileName, this.getResources().getConfiguration().orientation);
+	imageViewDraw = (ImageView)findViewById(R.id.imageViewDraw);
+	Display currentDisplay = getWindowManager().getDefaultDisplay();
+	float dw = currentDisplay.getWidth();
+	float dh = currentDisplay.getHeight();
 
-	ImageView image = (ImageView)findViewById(R.id.imageViewSegmentation);
-	image.setImageBitmap(bitmap);
+	Bitmap  bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
+	canvas = new Canvas(bitmapDraw);
+	imageViewDraw.setImageBitmap(bitmapDraw);
+
+	paint = new Paint();
+	paint.setColor(Color.BLUE);
+	paint.setStrokeWidth(5);
+	paint.setStrokeJoin(Paint.Join.ROUND);
+	paint.setStrokeCap(Paint.Cap.ROUND);
+	paint.setDither(true);
+	paint.setAntiAlias(true);
+	imageViewDraw.setOnTouchListener(this);
     }
 
     @Override
@@ -48,6 +74,29 @@ public class SegmentationActivity
     public void onCancelSegmentation(View view) {
 	Toast.makeText(this, "onCancelSegmentation", Toast.LENGTH_SHORT).show();
 	finish();
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+	int action = event.getAction();
+	switch (action) {
+	    case MotionEvent.ACTION_DOWN:
+		downx = event.getX();
+		downy = event.getY();
+		break;
+	    case MotionEvent.ACTION_MOVE:
+		break;
+	    case MotionEvent.ACTION_UP:
+		upx = event.getX();
+		upy = event.getY();
+		canvas.drawLine(downx, downy, upx, upy, paint);
+		imageViewDraw.invalidate();
+		break;
+	    case MotionEvent.ACTION_CANCEL:
+		break;
+	    default:
+		break;
+	}
+	return true;
     }
 
 }

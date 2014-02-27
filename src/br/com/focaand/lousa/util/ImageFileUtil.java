@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Environment;
@@ -73,5 +74,11 @@ public class ImageFileUtil {
 	bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
 
 	return bitmap;
+    }
+
+    public static Point getProportionalXY(int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, int inputX, int inputY) {
+	Point point = new Point();
+	//TODO: Implementar cálculo de proporção para desenhar no local correto da imagem.
+	return point;
     }
 }

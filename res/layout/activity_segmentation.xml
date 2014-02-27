@@ -6,7 +6,12 @@
     tools:context=".SegmentationActivity" >
 
     <ImageView
-        android:id="@+id/imageViewSegmentation"
+        android:id="@+id/imageViewPicture"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <ImageView
+        android:id="@+id/imageViewDraw"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
