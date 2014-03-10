@@ -92,8 +92,8 @@ public class SegmentationActivity
 	    case MotionEvent.ACTION_UP:
 		upx = event.getX();
 		upy = event.getY();
-		canvas.drawLine(downx, downy, upx, upy, paint);
-//		draw(downx, downy, upx, upy);
+//		canvas.drawLine(downx, downy, upx, upy, paint);
+		draw(downx, downy, upx, upy);
 		imageViewDraw.invalidate();
 		break;
 	    case MotionEvent.ACTION_CANCEL:
@@ -106,7 +106,7 @@ public class SegmentationActivity
 
     private void draw(float downX, float downY, float upX, float upY) {
 	Point pointDown = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
-	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
+	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)upX, (int)upY);
 	canvas.drawLine(pointDown.x, pointDown.y, pointUp.x, pointUp.y, paint);
     }
 
