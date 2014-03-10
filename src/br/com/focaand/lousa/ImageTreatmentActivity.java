@@ -9,6 +9,7 @@ import tcc.operators.MorphlogicalOperators;
 import tcc.operators.OperatorsByIFT;
 import tcc.utils.AdjacencyRelation;
 import br.com.focaand.lousa.util.ImageFileUtil;
+import android.R.integer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -53,8 +54,10 @@ public class ImageTreatmentActivity extends Activity {
 			
 			int imgMarcador[][] = new int[bitmapWidth][bitmapHeight];
 			for(int x=0; x < bitmapWidth; x++)
-				for(int y=0; y < bitmapHeight; y++)
-					imgMarcador[x][y] = -1;
+				for(int y=0; y < bitmapHeight; y++){
+						imgMarcador[x][y] = -1;
+				}
+					
 			
 			
 			for (int i = 0; i < bitmapWidth; i++) {
@@ -96,11 +99,12 @@ public class ImageTreatmentActivity extends Activity {
 			
 			for (int i = 0; i < bitmapWidth; i++) {
 				for (int j = 0; j < bitmapHeight; j++) {
-					int rgb = pixelsImageLabel[0][i][j];
+					int rgb = 255;
+					rgb = (rgb << 8) + pixelsImageLabel[0][i][j];
 					rgb = (rgb << 8) + pixelsImageLabel[1][i][j];
 					rgb = (rgb << 8) + pixelsImageLabel[2][i][j];
-					
 					bitmap.setPixel(i, j, rgb);
+					
 				}
 			}
 			
