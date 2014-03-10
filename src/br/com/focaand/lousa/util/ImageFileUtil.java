@@ -2,9 +2,9 @@ package br.com.focaand.lousa.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -56,18 +56,37 @@ public class ImageFileUtil {
 	return mediaFile;
     }
 
+    public static boolean saveBitmap(Bitmap bitmap, String fileName) {
+
+	FileOutputStream out = null;
+	try {
+	    out = new FileOutputStream(fileName);
+	    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+		if (out != null)
+		    out.close();
+	    } catch (Throwable ignore) {
+	    }
+	}
+
+	return true;
+    }
+
     public static Bitmap getBitmap(String fileName, int deviceOrientation) {
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 	Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
 
 	if (deviceOrientation == Configuration.ORIENTATION_PORTRAIT) {
-		// Rotaciona o bitmap para exibir quando o celular estiver em portrait
-		Matrix matrix = new Matrix();
-		matrix.postRotate(90);
-		Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-		bitmap = rotatedBitmap;
+	    // Rotaciona o bitmap para exibir quando o celular estiver em portrait
+	    Matrix matrix = new Matrix();
+	    matrix.postRotate(90);
+	    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+	    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+	    bitmap = rotatedBitmap;
 	}
 
 	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -77,8 +96,8 @@ public class ImageFileUtil {
     }
 
     public static Point getProportionalXY(int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, int inputX, int inputY) {
-	int x = (int) (inputX * bitmapWidth) / screenWidth;
-	int y = (int) (inputY * bitmapHeight) / screenHeight;
+	int x = (int)(inputX * bitmapWidth) / screenWidth;
+	int y = (int)(inputY * bitmapHeight) / screenHeight;
 	return new Point(x, y);
     }
 }

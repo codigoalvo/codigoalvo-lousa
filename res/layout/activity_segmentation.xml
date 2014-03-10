@@ -33,4 +33,13 @@
         android:layout_alignParentLeft="true"
         android:src="@drawable/ic_btn_cancel" />
 
+    <ImageButton
+        android:id="@+id/imgBtnSwitchSegment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="onSwitchSegment"
+        android:src="@drawable/ic_btn_switch" />
+
 </RelativeLayout>

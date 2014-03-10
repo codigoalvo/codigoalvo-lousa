@@ -17,8 +17,7 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class SegmentationActivity
-    extends Activity implements OnTouchListener {
+public class SegmentationActivity extends Activity implements OnTouchListener {
 
     private int displayWidth;
     private int displayHeight;
@@ -28,6 +27,14 @@ public class SegmentationActivity
     Canvas canvas;
     Paint paint;
     float downx = 0, downy = 0, upx = 0, upy = 0;
+
+    int[][] imgMarcador;
+
+    enum SegmentType {
+	BACKGROUND, FOREGROUND
+    };
+
+    private SegmentType currentSegment = SegmentType.FOREGROUND;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,10 @@ public class SegmentationActivity
 	bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
 	canvas = new Canvas(bitmapDraw);
 	imageViewDraw.setImageBitmap(bitmapDraw);
+	imgMarcador = new int[bitmapPicture.getWidth()][bitmapPicture.getHeight()];
+	for (int x = 0; x < bitmapPicture.getWidth(); x++)
+	    for (int y = 0; y < bitmapPicture.getHeight(); y++)
+		imgMarcador[x][y] = -1;
 
 	paint = new Paint();
 	paint.setColor(Color.BLUE);
@@ -67,17 +78,37 @@ public class SegmentationActivity
     }
 
     public void onDoneSegmentation(View view) {
-	Toast.makeText(this, "onDoneSegmentation", Toast.LENGTH_SHORT).show();
-	//TODO: Neste ponto, salvar o arquivo novo jÃ¡ segmentado para enviar para a prÃ³xima activity
-	Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
-        i.putExtra("photo_path" ,fileName);
-        startActivity(i);
-        finish();
+	String segmentFileName = fileName.replaceAll("IMG_", "SEG_");
+	boolean saveDrawOk = ImageFileUtil.saveBitmap(bitmapDraw, segmentFileName);
+
+	if (saveDrawOk) {
+	    Toast.makeText(this, "onDoneSegmentation", Toast.LENGTH_SHORT).show();
+	    Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
+	    i.putExtra("photo_path", fileName);
+	    i.putExtra("segment_path", segmentFileName);
+	    startActivity(i);
+	    finish();
+
+	} else {
+	    Toast.makeText(this, "Erro ao salvar arquivo de segmentação", Toast.LENGTH_SHORT).show();
+	}
     }
 
     public void onCancelSegmentation(View view) {
 	Toast.makeText(this, "onCancelSegmentation", Toast.LENGTH_SHORT).show();
 	finish();
+    }
+
+    public void onSwitchSegment(View view) {
+	if (currentSegment == SegmentType.BACKGROUND) {
+	    currentSegment = SegmentType.FOREGROUND;
+	    if (this.paint != null)
+		this.paint.setColor(Color.BLUE);
+	} else {
+	    currentSegment = SegmentType.BACKGROUND;
+	    if (this.paint != null)
+		this.paint.setColor(Color.RED);
+	}
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -92,7 +123,7 @@ public class SegmentationActivity
 	    case MotionEvent.ACTION_UP:
 		upx = event.getX();
 		upy = event.getY();
-//		canvas.drawLine(downx, downy, upx, upy, paint);
+		// canvas.drawLine(downx, downy, upx, upy, paint);
 		draw(downx, downy, upx, upy);
 		imageViewDraw.invalidate();
 		break;
@@ -105,8 +136,10 @@ public class SegmentationActivity
     }
 
     private void draw(float downX, float downY, float upX, float upY) {
-	Point pointDown = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
-	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)upX, (int)upY);
+	Point pointDown = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
+	                                                  (int)downX, (int)downY);
+	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
+	                                                (int)upX, (int)upY);
 	canvas.drawLine(pointDown.x, pointDown.y, pointUp.x, pointUp.y, paint);
     }
 
