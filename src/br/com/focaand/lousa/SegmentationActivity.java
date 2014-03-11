@@ -28,8 +28,6 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
     Paint paint;
     float downx = 0, downy = 0, upx = 0, upy = 0;
 
-    int[][] imgMarcador;
-
     enum SegmentType {
 	BACKGROUND, FOREGROUND
     };
@@ -55,10 +53,6 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
 	bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
 	canvas = new Canvas(bitmapDraw);
 	imageViewDraw.setImageBitmap(bitmapDraw);
-	imgMarcador = new int[bitmapPicture.getWidth()][bitmapPicture.getHeight()];
-	for (int x = 0; x < bitmapPicture.getWidth(); x++)
-	    for (int y = 0; y < bitmapPicture.getHeight(); y++)
-		imgMarcador[x][y] = -1;
 
 	paint = new Paint();
 	paint.setColor(Color.BLUE);
@@ -123,7 +117,6 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
 	    case MotionEvent.ACTION_UP:
 		upx = event.getX();
 		upy = event.getY();
-		// canvas.drawLine(downx, downy, upx, upy, paint);
 		draw(downx, downy, upx, upy);
 		imageViewDraw.invalidate();
 		break;

@@ -25,6 +25,7 @@ public class ImageTreatmentActivity extends Activity {
     private String segmentFileName = "";
     int imgMarcador[][];
     AdjacencyRelation adj = AdjacencyRelation.getCircular(1.5f);
+    Bitmap picture;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,7 +45,7 @@ public class ImageTreatmentActivity extends Activity {
 
 	    segmentFileName = extras.getString("segment_path");
 
-	    Bitmap picture = ImageFileUtil.getBitmap(pictureFileName, this.getResources().getConfiguration().orientation);
+	    picture = ImageFileUtil.getBitmap(pictureFileName, this.getResources().getConfiguration().orientation);
 
 	    Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName, this.getResources().getConfiguration().orientation);
 
@@ -54,10 +55,15 @@ public class ImageTreatmentActivity extends Activity {
 	    int bitmapHeight = picture.getHeight();
 	    int pixels[][] = new int[bitmapWidth][bitmapHeight];
 
-	    int imgMarcador[][] = new int[bitmapWidth][bitmapHeight];
-	    for (int x = 0; x < segmentation.getWidth(); x++)
-		for (int y = 0; y < segmentation.getHeight(); y++) {
+	    int imgMarcador[][] = new int[segmentation.getWidth()][segmentation.getHeight()];
+	    for (int x = 0; x < segmentation.getWidth()-1; x++)
+		for (int y = 0; y < segmentation.getHeight()-1; y++) {
 			int pixelSegmentation = segmentation.getPixel(x, y);
+			int R = (pixelSegmentation >> 16) & 0xff;
+			int G = (pixelSegmentation >> 8) & 0xff;
+			int B = pixelSegmentation & 0xff;
+			pixelSegmentation = (int)Math.round(.299 * R + .587 * G + .114 * B);
+
 			if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED)
 				imgMarcador[x][y] = pixelSegmentation;
 			else
@@ -79,14 +85,16 @@ public class ImageTreatmentActivity extends Activity {
 	    HashMap<Integer, Integer> labels = new HashMap<Integer, Integer>();
 	    int label = 1;
 	    IGrayScaleImage imgM = new GrayScaleImage(bitmapWidth, bitmapHeight);
+	    System.out.println("bitmapWidth "+bitmapWidth+"  -  bitmapHeight "+bitmapHeight);
+	    System.out.println("imgMarcador "+imgMarcador.length+"  -  imgMarcador[0] "+imgMarcador[0].length);
 	    for (int x = 0; x < bitmapWidth; x++) {
 		for (int y = 0; y < bitmapHeight; y++) {
-		    if (imgMarcador[x][y] != -1) {
-			if (labels.containsKey(imgMarcador[x][y])) {
-			    imgM.setPixel(x, y, labels.get(imgMarcador[x][y]));
+		    if (imgMarcador[y][x] != -1) {
+			if (labels.containsKey(imgMarcador[y][x])) {
+			    imgM.setPixel(x, y, labels.get(imgMarcador[y][x]));
 			} else {
-			    labels.put(imgMarcador[x][y], label++);
-			    imgM.setPixel(x, y, labels.get(imgMarcador[x][y]));
+			    labels.put(imgMarcador[y][x], label++);
+			    imgM.setPixel(x, y, labels.get(imgMarcador[y][x]));
 			}
 		    } else {
 			imgM.setPixel(x, y, -1);
@@ -120,8 +128,18 @@ public class ImageTreatmentActivity extends Activity {
     }
 
     public void onDoneTreatment(View view) {
-	Toast.makeText(this, "Saved: " + pictureFileName, Toast.LENGTH_SHORT).show();
-	finish();
+	if (picture != null  &&  pictureFileName != null  &&  !pictureFileName.isEmpty()) {
+	    String finalFileName = pictureFileName.replaceAll("IMG_", "END_");
+	    boolean saveOk = ImageFileUtil.saveBitmap(picture, finalFileName);
+	    if (saveOk) {
+		Toast.makeText(this, "Saved: " + pictureFileName, Toast.LENGTH_SHORT).show();
+	    	finish();
+	    } else {
+		Toast.makeText(this, "Erro ao salvar: " + pictureFileName, Toast.LENGTH_SHORT).show();
+	    }
+	} else {
+	    Toast.makeText(this, "Não é possível salvar!", Toast.LENGTH_SHORT).show();
+	}
     }
 
     public void onCancelTreatment(View view) {
