@@ -1,6 +1,7 @@
 package br.com.focaand.lousa;
 
 import java.util.HashMap;
+
 import tcc.GrayScaleImage;
 import tcc.IGrayScaleImage;
 import tcc.IRGBImage;
@@ -9,6 +10,7 @@ import tcc.operators.OperatorsByIFT;
 import tcc.utils.AdjacencyRelation;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -53,9 +55,13 @@ public class ImageTreatmentActivity extends Activity {
 	    int pixels[][] = new int[bitmapWidth][bitmapHeight];
 
 	    int imgMarcador[][] = new int[bitmapWidth][bitmapHeight];
-	    for (int x = 0; x < bitmapWidth; x++)
-		for (int y = 0; y < bitmapHeight; y++) {
-		    imgMarcador[x][y] = -1;
+	    for (int x = 0; x < segmentation.getWidth(); x++)
+		for (int y = 0; y < segmentation.getHeight(); y++) {
+			int pixelSegmentation = segmentation.getPixel(x, y);
+			if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED)
+				imgMarcador[x][y] = pixelSegmentation;
+			else
+				imgMarcador[x][y] = -1;
 		}
 
 	    for (int i = 0; i < bitmapWidth; i++) {
