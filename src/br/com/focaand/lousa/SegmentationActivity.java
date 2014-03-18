@@ -62,7 +62,6 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	paint.setStrokeCap(Paint.Cap.ROUND);
 	paint.setDither(true);
 	paint.setAntiAlias(true);
-//	imageViewDraw.setOnTouchListener(this);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	    finish();
 
 	} else {
-	    Toast.makeText(this, "Erro ao salvar arquivo de segmentação", Toast.LENGTH_SHORT).show();
+	    Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
 	}
     }
 
@@ -130,10 +129,8 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     }
 
     private void draw(float downX, float downY, float upX, float upY) {
-	Point pointDown = getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
-	                                                  (int)downX, (int)downY);
-	Point pointUp = getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
-	                                                (int)upX, (int)upY);
+	Point pointDown = getProportionalXY(imageViewDraw.getMeasuredWidth(), imageViewDraw.getMeasuredHeight(), bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)downX, (int)downY);
+	Point pointUp = getProportionalXY(imageViewDraw.getMeasuredWidth(), imageViewDraw.getMeasuredHeight(), bitmapDraw.getWidth(), bitmapDraw.getHeight(), (int)upX, (int)upY);
 	canvas.drawLine(pointDown.x, pointDown.y, pointUp.x, pointUp.y, paint);
     }
 

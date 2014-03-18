@@ -9,5 +9,6 @@
     <string name="image_treatment">Tratamento de Imagem</string>
     <string name="take_picture">Tirar Foto</string>
     <string name="title_activity_segmentation">SegmentationActivity</string>
+    <string name="erro_salvar_seg">Erro ao salvar arquivo de segmentação</string>
 
 </resources>
