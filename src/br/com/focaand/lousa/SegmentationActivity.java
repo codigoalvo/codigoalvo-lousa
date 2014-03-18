@@ -72,17 +72,20 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     }
 
     public void onDoneSegmentation(View view) {
-	String segmentFileName = fileName.replaceAll("IMG_", "SEG_");
-	boolean saveDrawOk = ImageFileUtil.saveBitmap(bitmapDraw, segmentFileName);
+	String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
+	if (bitmapDraw != null  &&  segmentFileName != null  &&  !segmentFileName.isEmpty()) {
+	    boolean saveDrawOk = ImageFileUtil.saveBitmap(bitmapDraw, segmentFileName);
+	    if (saveDrawOk) {
+		Toast.makeText(this, "Arquivo temporario de segmentacao salvo com sucesso", Toast.LENGTH_SHORT).show();
+		Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
+		i.putExtra("photo_path", fileName);
+		i.putExtra("segment_path", segmentFileName);
+		startActivity(i);
+		finish();
 
-	if (saveDrawOk) {
-	    Toast.makeText(this, "onDoneSegmentation", Toast.LENGTH_SHORT).show();
-	    Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
-	    i.putExtra("photo_path", fileName);
-	    i.putExtra("segment_path", segmentFileName);
-	    startActivity(i);
-	    finish();
-
+	    } else {
+		Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
+	    }
 	} else {
 	    Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
 	}

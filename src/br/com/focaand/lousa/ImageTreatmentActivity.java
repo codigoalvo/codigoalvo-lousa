@@ -1,7 +1,6 @@
 package br.com.focaand.lousa;
 
 import java.util.HashMap;
-
 import tcc.GrayScaleImage;
 import tcc.IGrayScaleImage;
 import tcc.IRGBImage;
@@ -128,14 +127,14 @@ public class ImageTreatmentActivity extends Activity {
     }
 
     public void onDoneTreatment(View view) {
-	if (picture != null  &&  pictureFileName != null  &&  !pictureFileName.isEmpty()) {
-	    String finalFileName = pictureFileName.replaceAll("IMG_", "END_");
+	String finalFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_FINAL).getPath();
+	if (picture != null  &&  finalFileName != null  &&  !finalFileName.isEmpty()) {
 	    boolean saveOk = ImageFileUtil.saveBitmap(picture, finalFileName);
 	    if (saveOk) {
-		Toast.makeText(this, "Saved: " + pictureFileName, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Saved: " + finalFileName, Toast.LENGTH_SHORT).show();
 	    	finish();
 	    } else {
-		Toast.makeText(this, "Erro ao salvar: " + pictureFileName, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Erro ao salvar: " + finalFileName, Toast.LENGTH_SHORT).show();
 	    }
 	} else {
 	    Toast.makeText(this, "Não é possível salvar!", Toast.LENGTH_SHORT).show();
