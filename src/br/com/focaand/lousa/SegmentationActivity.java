@@ -17,7 +17,7 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class SegmentationActivity extends Activity implements OnTouchListener {
+public class SegmentationActivity extends Activity  implements OnTouchListener {
 
     private int displayWidth;
     private int displayHeight;
@@ -53,6 +53,7 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
 	bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
 	canvas = new Canvas(bitmapDraw);
 	imageViewDraw.setImageBitmap(bitmapDraw);
+	imageViewDraw.setOnTouchListener(this);
 
 	paint = new Paint();
 	paint.setColor(Color.BLUE);
@@ -61,7 +62,7 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
 	paint.setStrokeCap(Paint.Cap.ROUND);
 	paint.setDither(true);
 	paint.setAntiAlias(true);
-	imageViewDraw.setOnTouchListener(this);
+//	imageViewDraw.setOnTouchListener(this);
     }
 
     @Override
@@ -129,11 +130,17 @@ public class SegmentationActivity extends Activity implements OnTouchListener {
     }
 
     private void draw(float downX, float downY, float upX, float upY) {
-	Point pointDown = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
+	Point pointDown = getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
 	                                                  (int)downX, (int)downY);
-	Point pointUp = ImageFileUtil.getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
+	Point pointUp = getProportionalXY(displayWidth, displayHeight, bitmapDraw.getWidth(), bitmapDraw.getHeight(),
 	                                                (int)upX, (int)upY);
 	canvas.drawLine(pointDown.x, pointDown.y, pointUp.x, pointUp.y, paint);
+    }
+
+    public static Point getProportionalXY(int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, int inputX, int inputY) {
+	int x = (int)(inputX * bitmapWidth) / screenWidth;
+	int y = (int)(inputY * bitmapHeight) / screenHeight;
+	return new Point(x, y);
     }
 
 }
