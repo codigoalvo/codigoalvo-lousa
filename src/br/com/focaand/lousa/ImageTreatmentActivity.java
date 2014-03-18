@@ -1,7 +1,9 @@
 package br.com.focaand.lousa;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
-
 import tcc.GrayScaleImage;
 import tcc.IGrayScaleImage;
 import tcc.IRGBImage;
@@ -12,6 +14,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,19 +59,17 @@ public class ImageTreatmentActivity extends Activity {
 	    int pixels[][] = new int[bitmapWidth][bitmapHeight];
 
 	    int imgMarcador[][] = new int[segmentation.getWidth()][segmentation.getHeight()];
-	    for (int x = 0; x < segmentation.getWidth()-1; x++)
-		for (int y = 0; y < segmentation.getHeight()-1; y++) {
+	    for (int x = 0; x < segmentation.getWidth(); x++)
+		for (int y = 0; y < segmentation.getHeight(); y++) {
 			int pixelSegmentation = segmentation.getPixel(x, y);
-			int R = (pixelSegmentation >> 16) & 0xff;
-			int G = (pixelSegmentation >> 8) & 0xff;
-			int B = pixelSegmentation & 0xff;
-			pixelSegmentation = (int)Math.round(.299 * R + .587 * G + .114 * B);
 
 			if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED)
 				imgMarcador[x][y] = pixelSegmentation;
 			else
 				imgMarcador[x][y] = -1;
 		}
+	    
+	    
 
 	    for (int i = 0; i < bitmapWidth; i++) {
 		for (int j = 0; j < bitmapHeight; j++) {
@@ -128,14 +129,14 @@ public class ImageTreatmentActivity extends Activity {
     }
 
     public void onDoneTreatment(View view) {
-	if (picture != null  &&  pictureFileName != null  &&  !pictureFileName.isEmpty()) {
-	    String finalFileName = pictureFileName.replaceAll("IMG_", "END_");
+	String finalFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_FINAL).getPath();
+	if (picture != null  &&  finalFileName != null  &&  !finalFileName.isEmpty()) {
 	    boolean saveOk = ImageFileUtil.saveBitmap(picture, finalFileName);
 	    if (saveOk) {
-		Toast.makeText(this, "Saved: " + pictureFileName, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Saved: " + finalFileName, Toast.LENGTH_SHORT).show();
 	    	finish();
 	    } else {
-		Toast.makeText(this, "Erro ao salvar: " + pictureFileName, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Erro ao salvar: " + finalFileName, Toast.LENGTH_SHORT).show();
 	    }
 	} else {
 	    Toast.makeText(this, "Não é possível salvar!", Toast.LENGTH_SHORT).show();
