@@ -8,12 +8,14 @@
     <ImageView
         android:id="@+id/imageViewPicture"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/imageViewDraw"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY" />
 
     <ImageButton
         android:id="@+id/imgBtnDoneSegmentation"
