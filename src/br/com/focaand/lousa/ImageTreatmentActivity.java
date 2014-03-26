@@ -105,17 +105,18 @@ public class ImageTreatmentActivity extends Activity {
 
 	    IGrayScaleImage imgWS = OperatorsByIFT.watershedByMarker(adj, imgGrad, imgM);
 
-	    IRGBImage imgLabel = imgWS.randomColor();
 
-	    int[][][] pixelsImageLabel = imgLabel.getPixels();
+	    int[][] pixelsImageLabel = imgWS.getPixels();
 
 	    for (int i = 0; i < bitmapWidth; i++) {
 		for (int j = 0; j < bitmapHeight; j++) {
-		    int rgb = 255;
-		    rgb = (rgb << 8) + pixelsImageLabel[0][i][j];
-		    rgb = (rgb << 8) + pixelsImageLabel[1][i][j];
-		    rgb = (rgb << 8) + pixelsImageLabel[2][i][j];
-		    picture.setPixel(i, j, rgb);
+			if(pixelsImageLabel[i][j] == 1){
+				int rgb = 255;
+			    rgb = (rgb << 8) + 255;
+			    rgb = (rgb << 8) + 255;
+			    rgb = (rgb << 8) + 255;
+			    picture.setPixel(i, j, rgb);
+			}
 
 		}
 	    }
