@@ -48,9 +48,9 @@ public class ImageTreatmentActivity extends Activity {
 
 	    segmentFileName = extras.getString("segment_path");
 
-	    picture = ImageFileUtil.getBitmap(pictureFileName, this.getResources().getConfiguration().orientation);
+	    picture = ImageFileUtil.getBitmap(pictureFileName);
 
-	    Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName, this.getResources().getConfiguration().orientation);
+	    Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName);
 
 	    ImageView image = (ImageView)findViewById(R.id.imageViewImageTreatment);
 
@@ -140,7 +140,7 @@ public class ImageTreatmentActivity extends Activity {
 		Toast.makeText(this, "Erro ao salvar: " + finalFileName, Toast.LENGTH_SHORT).show();
 	    }
 	} else {
-	    Toast.makeText(this, "Não é possível salvar!", Toast.LENGTH_SHORT).show();
+	    Toast.makeText(this, "Nï¿½o ï¿½ possï¿½vel salvar!", Toast.LENGTH_SHORT).show();
 	}
     }
 

@@ -3,23 +3,25 @@ package br.com.focaand.lousa.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import android.content.res.Configuration;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Bitmap.CompressFormat;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
 public class ImageFileUtil {
 
-    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_IMAGE        = 1;
     public static final int MEDIA_TYPE_SEGMENTATION = 2;
-    public static final int MEDIA_TYPE_FINAL = 3;
+    public static final int MEDIA_TYPE_FINAL        = 3;
 
     /** Create a file Uri for saving an image or video */
     public static Uri getOutputMediaFileUri(int type) {
@@ -78,24 +80,94 @@ public class ImageFileUtil {
 	return true;
     }
 
-    public static Bitmap getBitmap(String fileName, int deviceOrientation) {
+    public static Bitmap scaleBitmapIfNeeded(Bitmap bitmap) {
+	int maxLargeSize = 1280;
+	int newSmalSize = -1;
+	int bmpW = bitmap.getWidth();
+	int bmpH = bitmap.getHeight();
+	boolean landscape = (bmpW >= bmpH);
+	if (landscape)
+	    newSmalSize = bmpH * maxLargeSize / bmpW;
+	else
+	    newSmalSize = bmpW * maxLargeSize / bmpH;
+	Bitmap scaledBitmap = null;
+	if (landscape)
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, maxLargeSize, newSmalSize, true);
+	else
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, newSmalSize, maxLargeSize, true);
+	return scaledBitmap;
+    }
+
+    public static String prepareFile(String fileName) {
+	Bitmap originalBitmap = getBitmap(fileName);
+	if (originalBitmap.getWidth() <= 1280 && originalBitmap.getHeight() <= 1280) {
+	    System.out.println("*focaAndLousa* - No need to resize file: " + fileName);
+	    return fileName;
+	} else {
+	    Bitmap scaledBitmap = scaleBitmapIfNeeded(originalBitmap);
+	    String newFileName = ImageFileUtil.getOutputMediaFileUri(MEDIA_TYPE_IMAGE).getPath();
+	    saveBitmap(scaledBitmap, newFileName);
+	    System.out.println("*focaAndLousa* - File: "
+		    + fileName
+		    + " resized to ["
+		    + scaledBitmap.getWidth()
+		    + "x"
+		    + scaledBitmap.getHeight()
+		    + "] and saved to: "
+		    + newFileName);
+	    return newFileName;
+	}
+    }
+
+    public static Bitmap getBitmap(String fileName) {
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 	Bitmap bitmap = BitmapFactory.decodeFile(fileName, options);
 
-	if (deviceOrientation == Configuration.ORIENTATION_PORTRAIT) {
-	    // Rotaciona o bitmap para exibir quando o celular estiver em portrait
-	    Matrix matrix = new Matrix();
-	    matrix.postRotate(90);
-	    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
-	    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-	    bitmap = rotatedBitmap;
-	}
+	// Rotate image if needed
+	Matrix matrix = new Matrix();
+	int rotation = getImageOrientation(fileName);
+	System.out.println(" ***** Rotating image [" + fileName + "] by " + rotation + " degrees *****");
+	matrix.postRotate(rotation);
+	Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+	bitmap = rotatedBitmap;
 
-	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-	bitmap.compress(CompressFormat.PNG, 0, byteArrayOutputStream);
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	bitmap.compress(CompressFormat.PNG, 0, out);
 
 	return bitmap;
+    }
+
+    /**
+     * 
+     * @param imagePath
+     * @autor http://stackoverflow.com/questions/19511610/camera-intent-auto-rotate-to-90-degree
+     * @return orientation angle
+     */
+    public static int getImageOrientation(String imagePath) {
+	int rotate = 0;
+	try {
+
+	    File imageFile = new File(imagePath);
+	    ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+	    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+	    System.out.println(" ***** Orientation: " + orientation);
+	    switch (orientation) {
+		case ExifInterface.ORIENTATION_ROTATE_270:
+		    rotate = 270;
+		    break;
+		case ExifInterface.ORIENTATION_ROTATE_180:
+		    rotate = 180;
+		    break;
+		case ExifInterface.ORIENTATION_ROTATE_90:
+		    rotate = 90;
+		    break;
+	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+	return rotate;
     }
 
     public static Point getProportionalXY(int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, int inputX, int inputY) {

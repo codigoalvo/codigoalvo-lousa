@@ -41,7 +41,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
 	Bundle extras = getIntent().getExtras();
 	fileName = extras.getString("photo_path");
-	Bitmap bitmapPicture = ImageFileUtil.getBitmap(fileName, this.getResources().getConfiguration().orientation);
+	Bitmap bitmapPicture = ImageFileUtil.getBitmap(fileName);
 	ImageView imageViewPicture = (ImageView)findViewById(R.id.imageViewPicture);
 	imageViewPicture.setImageBitmap(bitmapPicture);
 
