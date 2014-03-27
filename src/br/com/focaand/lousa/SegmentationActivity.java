@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,8 +18,6 @@ import android.widget.Toast;
 
 public class SegmentationActivity extends Activity  implements OnTouchListener {
 
-    private int displayWidth;
-    private int displayHeight;
     private String fileName = "";
     private Bitmap bitmapDraw;
     ImageView imageViewDraw;
@@ -46,9 +43,6 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	imageViewPicture.setImageBitmap(bitmapPicture);
 
 	imageViewDraw = (ImageView)findViewById(R.id.imageViewDraw);
-	Display currentDisplay = getWindowManager().getDefaultDisplay();
-	displayWidth = currentDisplay.getWidth();
-	displayHeight = currentDisplay.getHeight();
 
 	bitmapDraw = Bitmap.createBitmap(bitmapPicture.getWidth(), bitmapPicture.getHeight(), Bitmap.Config.ARGB_8888);
 	canvas = new Canvas(bitmapDraw);

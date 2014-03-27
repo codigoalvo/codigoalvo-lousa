@@ -107,14 +107,8 @@ public class ImageFileUtil {
 	    Bitmap scaledBitmap = scaleBitmapIfNeeded(originalBitmap);
 	    String newFileName = ImageFileUtil.getOutputMediaFileUri(MEDIA_TYPE_IMAGE).getPath();
 	    saveBitmap(scaledBitmap, newFileName);
-	    System.out.println("*focaAndLousa* - File: "
-		    + fileName
-		    + " resized to ["
-		    + scaledBitmap.getWidth()
-		    + "x"
-		    + scaledBitmap.getHeight()
-		    + "] and saved to: "
-		    + newFileName);
+	    System.out.println("*focaAndLousa* - File: " + fileName + " resized to [" + scaledBitmap.getWidth()
+		    + "x" + scaledBitmap.getHeight() + "] and saved to: "    + newFileName);
 	    return newFileName;
 	}
     }
@@ -127,7 +121,7 @@ public class ImageFileUtil {
 	// Rotate image if needed
 	Matrix matrix = new Matrix();
 	int rotation = getImageOrientation(fileName);
-	System.out.println(" ***** Rotating image [" + fileName + "] by " + rotation + " degrees *****");
+	System.out.println(" *focaAndLousa* - Rotating image [" + fileName + "] by " + rotation + " degrees *");
 	matrix.postRotate(rotation);
 	Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 	bitmap = rotatedBitmap;
@@ -152,7 +146,7 @@ public class ImageFileUtil {
 	    ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
 	    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
-	    System.out.println(" ***** Orientation: " + orientation);
+	    System.out.println(" *focaAndLousa* Image orientation detected: " + orientation);
 	    switch (orientation) {
 		case ExifInterface.ORIENTATION_ROTATE_270:
 		    rotate = 270;
