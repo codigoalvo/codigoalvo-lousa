@@ -10,5 +10,9 @@
     <string name="take_picture">Tirar Foto</string>
     <string name="title_activity_segmentation">SegmentationActivity</string>
     <string name="erro_salvar_seg">Erro ao salvar arquivo de segmentação</string>
+    <string name="ok_salvar_seg">Arquivo temporario de segmentacao salvo com sucesso!</string>
+    <string name="processing_segmentation">Processando Segmentação</string>
+    <string name="processing_image">Processando Imagem</string>
+    <string name="please_wait">Esta operação pode demorar! Por favor aguarde...</string>
 
 </resources>

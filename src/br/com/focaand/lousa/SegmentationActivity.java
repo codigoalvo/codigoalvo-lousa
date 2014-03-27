@@ -1,8 +1,16 @@
 package br.com.focaand.lousa;
 
+import java.util.HashMap;
+
+import tcc.GrayScaleImage;
+import tcc.IGrayScaleImage;
+import tcc.operators.MorphlogicalOperators;
+import tcc.operators.OperatorsByIFT;
+import tcc.utils.AdjacencyRelation;
 import br.com.focaand.lousa.util.ImageFileUtil;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,6 +28,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
     private String fileName = "";
     private Bitmap bitmapDraw;
+    private Bitmap bitmapPicture;
     ImageView imageViewDraw;
     Canvas canvas;
     Paint paint;
@@ -38,7 +47,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
 	Bundle extras = getIntent().getExtras();
 	fileName = extras.getString("photo_path");
-	Bitmap bitmapPicture = ImageFileUtil.getBitmap(fileName);
+	bitmapPicture = ImageFileUtil.getBitmap(fileName);
 	ImageView imageViewPicture = (ImageView)findViewById(R.id.imageViewPicture);
 	imageViewPicture.setImageBitmap(bitmapPicture);
 
@@ -66,13 +75,41 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     }
 
     public void onDoneSegmentation(View view) {
-	String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
+	final String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
 	if (bitmapDraw != null  &&  segmentFileName != null  &&  !segmentFileName.isEmpty()) {
-	    boolean saveDrawOk = ImageFileUtil.saveBitmap(bitmapDraw, segmentFileName);
+
+	    final ProgressDialog dialog = new ProgressDialog(SegmentationActivity.this);
+	    dialog.setTitle(R.string.processing_segmentation);
+	    dialog.setMessage(getResources().getString(R.string.please_wait));
+	    dialog.show();
+
+	    new Thread(new Runnable() {
+		@Override
+		public void run()
+		{
+		    final Bitmap segmented = processSegmentation(bitmapPicture, bitmapDraw);
+		    runOnUiThread(new Runnable() {
+			@Override
+			public void run()
+			{
+			    dialog.dismiss();
+			    saveBitmap(segmented, segmentFileName);
+			}
+		    });
+		}
+	    }).start();
+
+	} else {
+	    Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
+	}
+    }
+
+    public void saveBitmap(Bitmap segmented, String segmentFileName) {
+	if (segmented != null) {
+	    boolean saveDrawOk = ImageFileUtil.saveBitmap(segmented, segmentFileName);
 	    if (saveDrawOk) {
-		Toast.makeText(this, "Arquivo temporario de segmentacao salvo com sucesso", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, R.string.ok_salvar_seg, Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
-		i.putExtra("photo_path", fileName);
 		i.putExtra("segment_path", segmentFileName);
 		startActivity(i);
 		finish();
@@ -86,7 +123,6 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     }
 
     public void onCancelSegmentation(View view) {
-	Toast.makeText(this, "onCancelSegmentation", Toast.LENGTH_SHORT).show();
 	finish();
     }
 
@@ -135,6 +171,77 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	int x = (int)(inputX * bitmapWidth) / screenWidth;
 	int y = (int)(inputY * bitmapHeight) / screenHeight;
 	return new Point(x, y);
+    }
+
+    private Bitmap processSegmentation(Bitmap picture, Bitmap segmentation) {
+	AdjacencyRelation adj = AdjacencyRelation.getCircular(1.5f);
+	int bitmapWidth = picture.getWidth();
+	int bitmapHeight = picture.getHeight();
+	int pixels[][] = new int[bitmapWidth][bitmapHeight];
+
+	System.out.println("*focaAndLousa* - ImageTreatment segmentFileSize: "+segmentation.getWidth()+"x"+segmentation.getHeight());
+	System.out.println("*focaAndLousa* - ImageTreatment pictureFileSize: "+picture.getWidth()+"x"+picture.getHeight());
+
+	int imgMarcador[][] = new int[segmentation.getWidth()][segmentation.getHeight()];
+	for (int x = 0; x < segmentation.getWidth(); x++)
+	    for (int y = 0; y < segmentation.getHeight(); y++) {
+		int pixelSegmentation = segmentation.getPixel(x, y);
+
+		if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED)
+		    imgMarcador[x][y] = pixelSegmentation;
+		else
+		    imgMarcador[x][y] = -1;
+	    }
+
+	for (int i = 0; i < bitmapWidth; i++) {
+	    for (int j = 0; j < bitmapHeight; j++) {
+		Integer p = picture.getPixel(i, j);
+		int R = (p >> 16) & 0xff;
+		int G = (p >> 8) & 0xff;
+		int B = p & 0xff;
+		pixels[i][j] = (int)Math.round(.299 * R + .587 * G + .114 * B);
+	    }
+	}
+
+	IGrayScaleImage imgGrad = MorphlogicalOperators.gradient(new GrayScaleImage(pixels), adj);
+
+	HashMap<Integer, Integer> labels = new HashMap<Integer, Integer>();
+	int label = 1;
+	IGrayScaleImage imgM = new GrayScaleImage(bitmapWidth, bitmapHeight);
+	System.out.println("*focaAndLousa* - bitmapWidth "+bitmapWidth+"  -  bitmapHeight "+bitmapHeight);
+	System.out.println("*focaAndLousa* - imgMarcador "+imgMarcador.length+"  -  imgMarcador[0] "+imgMarcador[0].length);
+	for (int x = 0; x < bitmapWidth; x++) {
+	    for (int y = 0; y < bitmapHeight; y++) {
+		if (imgMarcador[x][y] != -1) {
+		    if (labels.containsKey(imgMarcador[x][y])) {
+			imgM.setPixel(x, y, labels.get(imgMarcador[x][y]));
+		    } else {
+			labels.put(imgMarcador[x][y], label++);
+			imgM.setPixel(x, y, labels.get(imgMarcador[x][y]));
+		    }
+		} else {
+		    imgM.setPixel(x, y, -1);
+		}
+	    }
+	}
+
+	IGrayScaleImage imgWS = OperatorsByIFT.watershedByMarker(adj, imgGrad, imgM);
+	Bitmap segmentedPicture = picture.copy(Bitmap.Config.ARGB_8888, true); 
+	int[][] pixelsImageLabel = imgWS.getPixels();
+
+	for (int i = 0; i < bitmapWidth; i++) {
+	    for (int j = 0; j < bitmapHeight; j++) {
+		if(pixelsImageLabel[i][j] == 1){
+		    int rgb = 255;
+		    rgb = (rgb << 8) + 255;
+		    rgb = (rgb << 8) + 255;
+		    rgb = (rgb << 8) + 255;
+		    segmentedPicture.setPixel(i, j, rgb);
+		}
+	    }
+	}
+
+	return segmentedPicture;
     }
 
 }
