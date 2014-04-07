@@ -146,6 +146,12 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 		downy = event.getY();
 		break;
 	    case MotionEvent.ACTION_MOVE:
+		upx = event.getX();
+		upy = event.getY();
+		draw(downx, downy, upx, upy);
+		downx = upx;
+		downy = upy;
+		imageViewDraw.invalidate();
 		break;
 	    case MotionEvent.ACTION_UP:
 		upx = event.getX();

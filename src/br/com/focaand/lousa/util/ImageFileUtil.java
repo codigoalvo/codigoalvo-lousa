@@ -23,7 +23,7 @@ public class ImageFileUtil {
     public static final int MEDIA_TYPE_SEGMENTATION = 2;
     public static final int MEDIA_TYPE_FINAL        = 3;
     
-    public static final int PICTURE_MAX_RES         = 1280;
+    public static final int PICTURE_MAX_RES         = 800;
 
     /** Create a file Uri for saving an image or video */
     public static Uri getOutputMediaFileUri(int type) {
