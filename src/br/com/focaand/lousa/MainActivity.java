@@ -1,12 +1,15 @@
 package br.com.focaand.lousa;
 
 import br.com.focaand.lousa.util.ImageFileUtil;
+import br.com.focaand.lousa.util.Preferences;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
@@ -26,6 +29,13 @@ public class MainActivity
 	Typeface face = Typeface.createFromAsset(getAssets(), "fonts/OpenDyslexicAlta-Regular.otf");
 	TextView lblTitle = (TextView)findViewById(R.id.lblTitle);
 	lblTitle.setTypeface(face);
+	SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the value for the run counter
+        int maxResolution = app_preferences.getInt("max_resolution", 800);
+        boolean showButtons = app_preferences.getBoolean("show_buttons", true);
+        Preferences.getInstance().setMaxResolution(maxResolution);
+        Preferences.getInstance().setShowButtons(showButtons);
     }
 
     @Override

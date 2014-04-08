@@ -37,7 +37,7 @@
         android:layout_alignLeft="@+id/edtResolucaoMax"
         android:layout_below="@+id/edtResolucaoMax"
         android:layout_marginTop="20dp"
-        android:text="Esconder botões" />
+        android:text="Exibir botões" />
 
     <Button
         android:id="@+id/btnCancelar"
@@ -47,6 +47,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="47dp"
         android:layout_marginLeft="20dp"
+        android:onClick="onCancel"
         android:text="Cancelar" />
 
     <Button
@@ -57,6 +58,7 @@
         android:layout_alignBottom="@+id/btnCancelar"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
+        android:onClick="onSave"
         android:text="Salvar" />
 
 </RelativeLayout>

@@ -22,8 +22,6 @@ public class ImageFileUtil {
     public static final int MEDIA_TYPE_IMAGE        = 1;
     public static final int MEDIA_TYPE_SEGMENTATION = 2;
     public static final int MEDIA_TYPE_FINAL        = 3;
-    
-    public static final int PICTURE_MAX_RES         = 800;
 
     /** Create a file Uri for saving an image or video */
     public static Uri getOutputMediaFileUri(int type) {
@@ -88,20 +86,20 @@ public class ImageFileUtil {
 	int bmpH = bitmap.getHeight();
 	boolean landscape = (bmpW >= bmpH);
 	if (landscape)
-	    newSmalSize = bmpH * PICTURE_MAX_RES / bmpW;
+	    newSmalSize = bmpH * Preferences.getInstance().getMaxResolution() / bmpW;
 	else
-	    newSmalSize = bmpW * PICTURE_MAX_RES / bmpH;
+	    newSmalSize = bmpW * Preferences.getInstance().getMaxResolution() / bmpH;
 	Bitmap scaledBitmap = null;
 	if (landscape)
-	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, PICTURE_MAX_RES, newSmalSize, true);
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, Preferences.getInstance().getMaxResolution(), newSmalSize, true);
 	else
-	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, newSmalSize, PICTURE_MAX_RES, true);
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, newSmalSize, Preferences.getInstance().getMaxResolution(), true);
 	return scaledBitmap;
     }
 
     public static String prepareFile(String fileName) {
 	Bitmap originalBitmap = getBitmap(fileName);
-	if (originalBitmap.getWidth() <= PICTURE_MAX_RES && originalBitmap.getHeight() <= PICTURE_MAX_RES) {
+	if (originalBitmap.getWidth() <= Preferences.getInstance().getMaxResolution() && originalBitmap.getHeight() <= Preferences.getInstance().getMaxResolution()) {
 	    System.out.println("*focaAndLousa* - No need to resize file: " + fileName);
 	    return fileName;
 	} else {
