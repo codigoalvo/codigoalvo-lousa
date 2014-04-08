@@ -278,12 +278,12 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	for (int i = 0; i < bitmapWidth; i++) {
 	    for (int j = 0; j < bitmapHeight; j++) {
 		if(pixelsImageLabel[i][j] == 1){
-		    int rgb = 255;
-		    rgb = (rgb << 8) + 255;
-		    rgb = (rgb << 8) + 255;
-		    rgb = (rgb << 8) + 255;
-		    segmentedPicture.setPixel(i, j, rgb);
-		}
+//		    int rgb = 255;
+//		    rgb = (rgb << 8) + 255;
+//		    rgb = (rgb << 8) + 255;
+//		    rgb = (rgb << 8) + 255;
+		    segmentedPicture.setPixel(i, j, Color.BLACK); //TODO: Aqui o ideal é colocar a cor da "MODA" da parte verde da imagem. 
+		} 
 	    }
 	}
 
