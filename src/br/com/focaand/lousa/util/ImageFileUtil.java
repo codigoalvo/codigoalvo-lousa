@@ -66,7 +66,7 @@ public class ImageFileUtil {
 	FileOutputStream out = null;
 	try {
 	    out = new FileOutputStream(fileName);
-	    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+	    bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
@@ -126,7 +126,7 @@ public class ImageFileUtil {
 	bitmap = rotatedBitmap;
 
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	bitmap.compress(CompressFormat.PNG, 0, out);
+	bitmap.compress(CompressFormat.PNG, 80, out);
 
 	return bitmap;
     }
