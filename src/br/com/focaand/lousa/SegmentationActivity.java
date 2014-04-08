@@ -66,7 +66,11 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
 	paint = new Paint();
 	paint.setColor(Color.BLUE);
-	paint.setStrokeWidth(5);
+	Double fatorBrush = Preferences.getInstance().getMaxResolution()/200d;
+	int brush = fatorBrush.intValue();
+	if (brush < 2)
+	    brush = 2;
+	paint.setStrokeWidth(brush);
 	paint.setStrokeJoin(Paint.Join.ROUND);
 	paint.setStrokeCap(Paint.Cap.ROUND);
 	paint.setDither(true);
