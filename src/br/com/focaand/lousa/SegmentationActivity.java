@@ -228,7 +228,11 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	int bitmapWidth = picture.getWidth();
 	int bitmapHeight = picture.getHeight();
 	int pixels[][] = new int[bitmapWidth][bitmapHeight];
-
+	int xBackground = 0;
+	int yBackground = 0;
+	int colorBackground = 0;
+	
+	
 	System.out.println("*focaAndLousa* - ImageTreatment segmentFileSize: "+segmentation.getWidth()+"x"+segmentation.getHeight());
 	System.out.println("*focaAndLousa* - ImageTreatment pictureFileSize: "+picture.getWidth()+"x"+picture.getHeight());
 
@@ -237,8 +241,13 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	    for (int y = 0; y < segmentation.getHeight(); y++) {
 		int pixelSegmentation = segmentation.getPixel(x, y);
 
-		if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED)
+		if(pixelSegmentation == Color.BLUE || pixelSegmentation == Color.RED){
 		    imgMarcador[x][y] = pixelSegmentation;
+		    if(pixelSegmentation == Color.RED){
+			xBackground = x;
+			yBackground = y;
+		    }
+		}  
 		else
 		    imgMarcador[x][y] = -1;
 	    }
@@ -279,9 +288,10 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	Bitmap segmentedPicture = picture.copy(Bitmap.Config.ARGB_8888, true); 
 	int[][] pixelsImageLabel = imgWS.getPixels();
 
+	colorBackground = pixelsImageLabel[xBackground][yBackground];
 	for (int i = 0; i < bitmapWidth; i++) {
 	    for (int j = 0; j < bitmapHeight; j++) {
-		if(pixelsImageLabel[i][j] == 1){
+		if(pixelsImageLabel[i][j] == colorBackground){
 //		    int rgb = 255;
 //		    rgb = (rgb << 8) + 255;
 //		    rgb = (rgb << 8) + 255;
