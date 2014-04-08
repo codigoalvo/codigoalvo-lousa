@@ -33,8 +33,10 @@ public class MainActivity
 
         // Get the value for the run counter
         int maxResolution = app_preferences.getInt("max_resolution", 800);
+        int contraste = app_preferences.getInt("contraste", 800);
         boolean showButtons = app_preferences.getBoolean("show_buttons", true);
         Preferences.getInstance().setMaxResolution(maxResolution);
+        Preferences.getInstance().setContraste(contraste);
         Preferences.getInstance().setShowButtons(showButtons);
     }
 

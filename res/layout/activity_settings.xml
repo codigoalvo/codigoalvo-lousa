@@ -9,7 +9,7 @@
     tools:context=".SettingsActivity" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/lblResolucaoMax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -22,20 +22,41 @@
         android:id="@+id/edtResolucaoMax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/lblResolucaoMax"
         android:ems="10"
         android:inputType="number" >
 
         <requestFocus />
     </EditText>
 
+    <TextView
+        android:id="@+id/lblContraste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/edtResolucaoMax"
+        android:layout_marginTop="20dp"
+        android:text="Limiar de Contraste" />
+
+    <EditText
+        android:id="@+id/edtContraste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/lblContraste"
+        android:ems="10"
+        android:inputType="number" >
+
+        <requestFocus />
+    </EditText>    
+
     <CheckBox
         android:id="@+id/ckbEscondeBotoes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/edtResolucaoMax"
-        android:layout_below="@+id/edtResolucaoMax"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/edtContraste"
         android:layout_marginTop="20dp"
         android:text="Exibir botões" />
 

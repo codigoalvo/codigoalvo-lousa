@@ -5,10 +5,12 @@ public class Preferences {
     private static Preferences instance = null;
 
     private int maxResolution;
+    private int contraste;
     private boolean showButtons;
 
     private Preferences() {
 	this.setMaxResolution(800);
+	this.setContraste(50);
 	this.setShowButtons(true);
     }
 
@@ -32,6 +34,14 @@ public class Preferences {
 
     public void setShowButtons(boolean showButtons) {
 	this.showButtons = showButtons;
+    }
+
+    public int getContraste() {
+	return contraste;
+    }
+
+    public void setContraste(int contraste) {
+	this.contraste = contraste;
     }
    
 }

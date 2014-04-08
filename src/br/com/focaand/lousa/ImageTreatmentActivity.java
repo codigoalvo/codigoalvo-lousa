@@ -123,7 +123,7 @@ public class ImageTreatmentActivity
 
     private Bitmap processaFiltrosImagem(Bitmap segmentation) {
 
-	Bitmap contrastBitmap = adjustedContrast(segmentation, 50);
+	Bitmap contrastBitmap = adjustedContrast(segmentation, Preferences.getInstance().getContraste());
 	
 	Bitmap colorInverted = colorInvert(contrastBitmap);
 
