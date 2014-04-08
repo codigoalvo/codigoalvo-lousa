@@ -49,6 +49,11 @@ public class MainActivity
 	intent.setAction(Intent.ACTION_GET_CONTENT);
 	startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
+    
+    public void onSettings(View view) {
+	Intent intent = new Intent(this, SettingsActivity.class);
+	startActivity(intent);
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	if (resultCode == RESULT_OK) {

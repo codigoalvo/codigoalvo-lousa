@@ -8,11 +8,12 @@
     <string name="from_galery">Adquirir imagem à partir da galeria</string>
     <string name="image_treatment">Tratamento de Imagem</string>
     <string name="take_picture">Tirar Foto</string>
-    <string name="title_activity_segmentation">SegmentationActivity</string>
+    <string name="title_activity_segmentation">Segmentação da imagem</string>
     <string name="erro_salvar_seg">Erro ao salvar arquivo de segmentação</string>
     <string name="ok_salvar_seg">Arquivo temporario de segmentacao salvo com sucesso!</string>
     <string name="processing_segmentation">Processando Segmentação</string>
     <string name="processing_image">Processando Imagem</string>
     <string name="please_wait">Esta operação pode demorar! Por favor aguarde...</string>
+    <string name="title_activity_settings">Configurações</string>
 
 </resources>

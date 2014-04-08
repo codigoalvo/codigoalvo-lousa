@@ -36,10 +36,21 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgBtnFromCamera"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
         android:contentDescription="@string/from_galery"
         android:onClick="onGetFromGalery"
         android:src="@drawable/ic_menu_galeria" />
+    
+    <ImageButton
+        android:id="@+id/imgBtnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgBtnFromGalery"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/action_settings"
+        android:onClick="onSettings"
+        android:src="@drawable/ic_menu_settings" />
 
     <TextView
         android:id="@+id/lblCompany"
