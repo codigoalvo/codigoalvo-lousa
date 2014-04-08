@@ -15,5 +15,8 @@
     <string name="processing_image">Processando Imagem</string>
     <string name="please_wait">Esta operação pode demorar! Por favor aguarde...</string>
     <string name="title_activity_settings">Configurações</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="mudar">Mudar</string>
 
 </resources>

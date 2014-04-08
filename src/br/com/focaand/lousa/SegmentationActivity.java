@@ -8,6 +8,7 @@ import tcc.operators.MorphlogicalOperators;
 import tcc.operators.OperatorsByIFT;
 import tcc.utils.AdjacencyRelation;
 import br.com.focaand.lousa.util.ImageFileUtil;
+import br.com.focaand.lousa.util.Preferences;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,9 +19,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,6 +47,9 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_segmentation);
+	
+	if (!Preferences.getInstance().getShowButtons())
+	    hideButtons();
 
 	Bundle extras = getIntent().getExtras();
 	fileName = extras.getString("photo_path");
@@ -74,7 +80,36 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_seg_cancelar:
+        	finish();
+                return true;
+            case R.id.action_seg_mudar:
+        	trocarSegmentacao();
+        	return true;
+            case R.id.action_seg_confirmar:
+        	finalizarSegmentacao();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void onDoneSegmentation(View view) {
+	finalizarSegmentacao();
+    }
+
+    public void onSwitchSegment(View view) {
+	trocarSegmentacao();
+    }
+
+    public void onCancelSegmentation(View view) {
+	finish();
+    }
+
+    private void finalizarSegmentacao() {
 	final String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
 	if (bitmapDraw != null  &&  segmentFileName != null  &&  !segmentFileName.isEmpty()) {
 
@@ -104,6 +139,27 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	}
     }
 
+    private void trocarSegmentacao() {
+	if (currentSegment == SegmentType.BACKGROUND) {
+	    currentSegment = SegmentType.FOREGROUND;
+	    if (this.paint != null)
+		this.paint.setColor(Color.BLUE);
+	} else {
+	    currentSegment = SegmentType.BACKGROUND;
+	    if (this.paint != null)
+		this.paint.setColor(Color.RED);
+	}
+    }
+
+    private void hideButtons() {
+	ImageButton imgBtnDoneSegmentation = (ImageButton)findViewById(R.id.imgBtnDoneSegmentation);
+	imgBtnDoneSegmentation.setVisibility(View.GONE);
+	ImageButton imgBtnCancelSegmentation = (ImageButton)findViewById(R.id.imgBtnCancelSegmentation);
+	imgBtnCancelSegmentation.setVisibility(View.GONE);
+	ImageButton imgBtnSwitchSegment = (ImageButton)findViewById(R.id.imgBtnSwitchSegment);
+	imgBtnSwitchSegment.setVisibility(View.GONE);
+    }
+
     public void saveBitmap(Bitmap segmented, String segmentFileName) {
 	if (segmented != null) {
 	    boolean saveDrawOk = ImageFileUtil.saveBitmap(segmented, segmentFileName);
@@ -119,22 +175,6 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	    }
 	} else {
 	    Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
-	}
-    }
-
-    public void onCancelSegmentation(View view) {
-	finish();
-    }
-
-    public void onSwitchSegment(View view) {
-	if (currentSegment == SegmentType.BACKGROUND) {
-	    currentSegment = SegmentType.FOREGROUND;
-	    if (this.paint != null)
-		this.paint.setColor(Color.BLUE);
-	} else {
-	    currentSegment = SegmentType.BACKGROUND;
-	    if (this.paint != null)
-		this.paint.setColor(Color.RED);
 	}
     }
 

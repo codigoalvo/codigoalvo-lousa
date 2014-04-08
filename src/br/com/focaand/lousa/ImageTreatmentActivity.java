@@ -9,10 +9,13 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import br.com.focaand.lousa.util.ImageFileUtil;
+import br.com.focaand.lousa.util.Preferences;
 
 public class ImageTreatmentActivity
     extends Activity {
@@ -31,9 +34,26 @@ public class ImageTreatmentActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_trt_cancelar:
+        	finish();
+                return true;
+            case R.id.action_trt_confirmar:
+        	finalizarTratamento();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_image_treatment);
+
+	if (!Preferences.getInstance().getShowButtons())
+	    hideButtons();
 
 	try {
 	    Bundle extras = getIntent().getExtras();
@@ -68,6 +88,22 @@ public class ImageTreatmentActivity
 	}
 
     }
+    
+    public void onDoneTreatment(View view) {
+	finalizarTratamento();
+    }
+
+    public void onCancelTreatment(View view) {
+	Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show();
+	finish();
+    }
+
+    private void hideButtons() {
+	ImageButton imgBtnDoneTreatment = (ImageButton)findViewById(R.id.imgBtnDoneTreatment);
+	imgBtnDoneTreatment.setVisibility(View.GONE);
+	ImageButton imgBtnCancelTreatment = (ImageButton)findViewById(R.id.imgBtnCancelTreatment);
+	imgBtnCancelTreatment.setVisibility(View.GONE);
+    }
 
     private Bitmap processaFiltrosImagem(Bitmap segmentation) {
 	Bitmap bmpGrayscale = toGrayscale(segmentation);
@@ -98,8 +134,8 @@ public class ImageTreatmentActivity
         c.drawBitmap(bmpOriginal, 0, 0, paint);
         return bmpGrayscale;
     }
-    
-    public void onDoneTreatment(View view) {
+
+    private void finalizarTratamento() {
 	String finalFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_FINAL).getPath();
 	if (finalPicture != null && finalFileName != null && !finalFileName.isEmpty()) {
 	    boolean saveOk = ImageFileUtil.saveBitmap(finalPicture, finalFileName);
@@ -112,11 +148,6 @@ public class ImageTreatmentActivity
 	} else {
 	    Toast.makeText(this, "Nao eh possivel salvar!", Toast.LENGTH_SHORT).show();
 	}
-    }
-
-    public void onCancelTreatment(View view) {
-	Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show();
-	finish();
     }
 
 }

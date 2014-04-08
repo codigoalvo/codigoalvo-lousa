@@ -1,8 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_seg_cancelar"
         android:orderInCategory="100"
-        android:title="@string/action_settings"/>
+        android:icon="@drawable/ic_btn_cancel"
+        android:title="@string/cancelar"/>
+
+    <item
+        android:id="@+id/action_seg_mudar"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_btn_switch"
+        android:title="@string/mudar"/>
+
+    <item
+        android:id="@+id/action_seg_confirmar"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_btn_done"
+        android:title="@string/confirmar"/>
 
 </menu>
