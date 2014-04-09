@@ -80,34 +80,43 @@ public class ImageFileUtil {
 	return true;
     }
 
-    public static Bitmap scaleBitmapIfNeeded(Bitmap bitmap) {
+    public static Bitmap scaleBitmap(Bitmap bitmap, int maxResolution) {
 	int newSmalSize = -1;
 	int bmpW = bitmap.getWidth();
 	int bmpH = bitmap.getHeight();
 	boolean landscape = (bmpW >= bmpH);
 	if (landscape)
-	    newSmalSize = bmpH * Preferences.getInstance().getMaxResolution() / bmpW;
+	    newSmalSize = bmpH * maxResolution / bmpW;
 	else
-	    newSmalSize = bmpW * Preferences.getInstance().getMaxResolution() / bmpH;
+	    newSmalSize = bmpW * maxResolution / bmpH;
 	Bitmap scaledBitmap = null;
 	if (landscape)
-	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, Preferences.getInstance().getMaxResolution(), newSmalSize, true);
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, maxResolution, newSmalSize, true);
 	else
-	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, newSmalSize, Preferences.getInstance().getMaxResolution(), true);
+	    scaledBitmap = Bitmap.createScaledBitmap(bitmap, newSmalSize, maxResolution, true);
 	return scaledBitmap;
     }
 
     public static String prepareFile(String fileName) {
 	Bitmap originalBitmap = getBitmap(fileName);
 	if (originalBitmap.getWidth() <= Preferences.getInstance().getMaxResolution() && originalBitmap.getHeight() <= Preferences.getInstance().getMaxResolution()) {
+	    originalBitmap.recycle();
+	    originalBitmap = null;
+	    System.gc();
 	    System.out.println("*focaAndLousa* - No need to resize file: " + fileName);
 	    return fileName;
 	} else {
-	    Bitmap scaledBitmap = scaleBitmapIfNeeded(originalBitmap);
+	    Bitmap scaledBitmap = scaleBitmap(originalBitmap, Preferences.getInstance().getMaxResolution());
 	    String newFileName = ImageFileUtil.getOutputMediaFileUri(MEDIA_TYPE_IMAGE).getPath();
 	    saveBitmap(scaledBitmap, newFileName);
 	    System.out.println("*focaAndLousa* - File: " + fileName + " resized to [" + scaledBitmap.getWidth()
 		    + "x" + scaledBitmap.getHeight() + "] and saved to: "    + newFileName);
+
+	    originalBitmap.recycle();
+	    originalBitmap = null;
+	    scaledBitmap.recycle();
+	    scaledBitmap = null;
+	    System.gc(); 
 	    return newFileName;
 	}
     }
@@ -122,9 +131,7 @@ public class ImageFileUtil {
 	int rotation = getImageOrientation(fileName);
 	System.out.println(" *focaAndLousa* - Rotating image [" + fileName + "] by " + rotation + " degrees *");
 	matrix.postRotate(rotation);
-	Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-	bitmap = rotatedBitmap;
-
+	bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	bitmap.compress(CompressFormat.PNG, 80, out);
 

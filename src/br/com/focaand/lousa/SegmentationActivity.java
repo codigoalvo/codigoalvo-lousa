@@ -18,6 +18,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -29,7 +30,7 @@ import android.widget.Toast;
 
 public class SegmentationActivity extends Activity  implements OnTouchListener {
 
-    private String fileName = "";
+    private static final String TAG = "focaand.lousa.SegmentationActivity";
     private Bitmap bitmapDraw;
     private Bitmap bitmapPicture;
     ImageView imageViewDraw;
@@ -45,6 +46,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+	Log.d(TAG, "before onCreate");
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_segmentation);
 	
@@ -52,7 +54,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	    hideButtons();
 
 	Bundle extras = getIntent().getExtras();
-	fileName = extras.getString("photo_path");
+	String fileName = extras.getString("photo_path");
 	bitmapPicture = ImageFileUtil.getBitmap(fileName);
 	ImageView imageViewPicture = (ImageView)findViewById(R.id.imageViewPicture);
 	imageViewPicture.setImageBitmap(bitmapPicture);
@@ -75,6 +77,25 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	paint.setStrokeCap(Paint.Cap.ROUND);
 	paint.setDither(true);
 	paint.setAntiAlias(true);
+	Log.d(TAG, "after onCreate");
+    }
+
+    @Override
+    protected void onDestroy() {
+	Log.d(TAG, "before onDestroy");
+	if (bitmapDraw != null) {
+	    bitmapDraw.recycle();
+	    bitmapDraw = null;
+	    Log.d(TAG, "onDestroy 1");
+	}
+	if (bitmapPicture != null) {
+	    bitmapPicture.recycle();
+	    bitmapPicture = null;
+	    Log.d(TAG, "onDestroy 2");
+	}
+	System.gc();
+        super.onDestroy();
+	Log.d(TAG, "after onDestroy");
     }
 
     @Override
@@ -116,7 +137,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
     private void finalizarSegmentacao() {
 	final String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
 	if (bitmapDraw != null  &&  segmentFileName != null  &&  !segmentFileName.isEmpty()) {
-
+	    Log.d("focaAndLousa", "Segmentation - before segmentation");
 	    final ProgressDialog dialog = new ProgressDialog(SegmentationActivity.this);
 	    dialog.setTitle(R.string.processing_segmentation);
 	    dialog.setMessage(getResources().getString(R.string.please_wait));
@@ -132,6 +153,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 			public void run()
 			{
 			    dialog.dismiss();
+			    Log.d("focaAndLousa", "Segmentation - endSegmentation 2");
 			    saveBitmap(segmented, segmentFileName);
 			}
 		    });
@@ -171,6 +193,9 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 		Toast.makeText(this, R.string.ok_salvar_seg, Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(SegmentationActivity.this, ImageTreatmentActivity.class);
 		i.putExtra("segment_path", segmentFileName);
+		segmented.recycle();
+		segmented = null;
+		System.gc();
 		startActivity(i);
 		finish();
 
@@ -292,14 +317,12 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	for (int i = 0; i < bitmapWidth; i++) {
 	    for (int j = 0; j < bitmapHeight; j++) {
 		if(pixelsImageLabel[i][j] == colorBackground){
-//		    int rgb = 255;
-//		    rgb = (rgb << 8) + 255;
-//		    rgb = (rgb << 8) + 255;
-//		    rgb = (rgb << 8) + 255;
 		    segmentedPicture.setPixel(i, j, Color.BLACK); //TODO: Aqui o ideal é colocar a cor da "MODA" da parte verde da imagem. 
 		} 
 	    }
 	}
+	
+	Log.d("focaAndLousa", "Segmentation - endSegmentation 1");
 
 	return segmentedPicture;
     }

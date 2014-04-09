@@ -9,6 +9,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ public class ImageTreatmentActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+	Log.d(TAG, "before onCreate");
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_image_treatment);
 
@@ -61,8 +63,6 @@ public class ImageTreatmentActivity
 	    segmentFileName = extras.getString("segment_path");
 	    final Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName);
 	    System.out.println("*focaAndLousa* - Loaded imageTreatment segmentFileName: " + segmentFileName);
-	    final ImageView image = (ImageView)findViewById(R.id.imageViewImageTreatment);
-	    image.setImageBitmap(segmentation);
 
 	    final ProgressDialog dialog = new ProgressDialog(ImageTreatmentActivity.this);
 	    dialog.setTitle(R.string.processing_image);
@@ -78,7 +78,8 @@ public class ImageTreatmentActivity
 			@Override
 			public void run() {
 			    dialog.dismiss();
-			    image.setImageBitmap(finalPicture);
+			    ImageView imageView = (ImageView)findViewById(R.id.imageViewImageTreatment);
+			    imageView.setImageBitmap(finalPicture);
 			}
 		    });
 		}
@@ -87,9 +88,22 @@ public class ImageTreatmentActivity
 	} catch (Exception exc) {
 	    exc.printStackTrace();
 	}
-
+	Log.d(TAG, "after onCreate");
     }
-    
+
+    @Override
+    protected void onDestroy() {
+	Log.d(TAG, "before onDestroy");
+	if (finalPicture != null) {
+	    finalPicture.recycle();
+	    finalPicture = null;
+	    Log.d(TAG, "onDestroy");
+	}
+	System.gc();
+        super.onDestroy();
+        Log.d(TAG, "after onDestroy");
+    }
+
     public void onDoneTreatment(View view) {
 	finalizarTratamento();
     }
@@ -124,14 +138,22 @@ public class ImageTreatmentActivity
     private Bitmap processaFiltrosImagem(Bitmap segmentation) {
 
 	Bitmap contrastBitmap = adjustedContrast(segmentation, Preferences.getInstance().getContraste());
-	
+
 	Bitmap colorInverted = colorInvert(contrastBitmap);
 
 	Bitmap bmpGrayscale = toGrayscale(colorInverted);
 
-	// TODO: Processamento de filtros da imagem deve ser feito aqui
-	Bitmap processBitmap = bmpGrayscale.copy(Bitmap.Config.ARGB_8888, true);
-	return processBitmap;
+	segmentation.recycle();
+	segmentation = null;
+
+	contrastBitmap.recycle();
+	contrastBitmap = null;
+
+	colorInverted.recycle();
+	colorInverted = null;
+	System.gc();
+
+	return bmpGrayscale;
     }
 
     /**
@@ -145,26 +167,29 @@ public class ImageTreatmentActivity
         width = bmpOriginal.getWidth();    
 
         Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
+        Canvas canvas = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        canvas.drawBitmap(bmpOriginal, 0, 0, paint);
+        bmpOriginal.recycle();
+        bmpOriginal = null;
+        System.gc();
         return bmpGrayscale;
     }
 
-    public static Bitmap colorInvert(Bitmap src) {
-	Bitmap output = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+    public static Bitmap colorInvert(Bitmap bitmapOriginal) {
+	Bitmap output = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), bitmapOriginal.getConfig());
 	int A, R, G, B;
 	int pixelColor;
-	int height = src.getHeight();
-	int width = src.getWidth();
+	int height = bitmapOriginal.getHeight();
+	int width = bitmapOriginal.getWidth();
 
 	for (int y = 0; y < height; y++) {
 	    for (int x = 0; x < width; x++) {
-		pixelColor = src.getPixel(x, y);
+		pixelColor = bitmapOriginal.getPixel(x, y);
 		A = Color.alpha(pixelColor);
 
 		R = 255 - Color.red(pixelColor);
@@ -174,26 +199,28 @@ public class ImageTreatmentActivity
 		output.setPixel(x, y, Color.argb(A, R, G, B));
 	    }
 	}
-
+	bitmapOriginal.recycle();
+	bitmapOriginal = null;
+	System.gc();
 	return output;
     }
 
-    private Bitmap adjustedContrast(Bitmap src, double value)
+    private Bitmap adjustedContrast(Bitmap bitmapOriginal, double value)
     {
         // image size
-        int width = src.getWidth();
-        int height = src.getHeight();
+        int width = bitmapOriginal.getWidth();
+        int height = bitmapOriginal.getHeight();
         // create output bitmap
 
         // create a mutable empty bitmap
-        Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+        Bitmap bmOut = Bitmap.createBitmap(width, height, bitmapOriginal.getConfig());
 
         // create a canvas so that we can draw the bmOut Bitmap from source bitmap
-        Canvas c = new Canvas();
-        c.setBitmap(bmOut);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(bmOut);
 
         // draw bitmap to bmOut from src bitmap so we can modify it
-        c.drawBitmap(src, 0, 0, new Paint(Color.BLACK));
+        canvas.drawBitmap(bitmapOriginal, 0, 0, new Paint(Color.BLACK));
 
 
         // color information
@@ -206,7 +233,7 @@ public class ImageTreatmentActivity
         for(int x = 0; x < width; ++x) {
             for(int y = 0; y < height; ++y) {
                 // get pixel color
-                pixel = src.getPixel(x, y);
+                pixel = bitmapOriginal.getPixel(x, y);
                 A = Color.alpha(pixel);
                 // apply filter contrast for every channel R, G, B
                 R = Color.red(pixel);
@@ -228,6 +255,9 @@ public class ImageTreatmentActivity
                 bmOut.setPixel(x, y, Color.argb(A, R, G, B));
             }
         }
+        bitmapOriginal.recycle();
+        bitmapOriginal = null;
+        System.gc();
         return bmOut;
     }
 
