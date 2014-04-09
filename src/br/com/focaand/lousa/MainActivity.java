@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity
     extends Activity {
@@ -21,6 +22,7 @@ public class MainActivity
     private static final int SELECT_PICTURE      = 1;
     private static final int CAPTURE_FROM_CAMERA = 2;
     private static final int GET_FROM_CAMERA     = 3;
+    private static Uri preCameraExtraUri         = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +58,11 @@ public class MainActivity
     public void onGetFromCamera(View view) {
 	// Intent intent = new Intent(this, CameraActivity.class);
 	// startActivityForResult(intent, CAPTURE_FROM_CAMERA);
-
 	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	if (Preferences.getInstance().getPreCameraExtraUri()) {
+	    preCameraExtraUri = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_CAMERA);
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, preCameraExtraUri);
+	}
 	startActivityForResult(intent, GET_FROM_CAMERA);
     }
 
@@ -82,8 +87,15 @@ public class MainActivity
 	    } else if (requestCode == CAPTURE_FROM_CAMERA) {
 		selectedImagePath = data.getStringExtra("photo_path");
 	    } else if (requestCode == GET_FROM_CAMERA) {
-		Uri selectedImageUri = data.getData();
-		selectedImagePath = getPath(selectedImageUri);
+		Uri selectedImageUri = null;
+		if (data != null &&  data.getData() != null) {
+		    selectedImageUri = data.getData();
+		    if (selectedImageUri != null)
+			selectedImagePath = getPath(selectedImageUri);
+		} else if (preCameraExtraUri != null) {
+		    selectedImageUri = preCameraExtraUri;
+		    selectedImagePath = selectedImageUri.getPath();
+		}
 	    }
 
 	    if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
@@ -92,6 +104,8 @@ public class MainActivity
 		Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
 		i.putExtra("photo_path", selectedImagePath);
 		startActivity(i);
+	    } else {
+		Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
 	    }
 	}
     }
@@ -99,7 +113,8 @@ public class MainActivity
     public String getPath(Uri uri) {
 	String[] projection = {MediaStore.Images.Media.DATA};
 	Cursor cursor = managedQuery(uri, projection, null, null, null);
-	int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	int column_index = -1;
+	column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 	cursor.moveToFirst();
 	return cursor.getString(column_index);
     }

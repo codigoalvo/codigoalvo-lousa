@@ -19,9 +19,10 @@ import android.util.Log;
 
 public class ImageFileUtil {
 
-    public static final int MEDIA_TYPE_IMAGE        = 1;
-    public static final int MEDIA_TYPE_SEGMENTATION = 2;
-    public static final int MEDIA_TYPE_FINAL        = 3;
+    public static final int MEDIA_TYPE_CAMERA       = 1;
+    public static final int MEDIA_TYPE_IMAGE        = 2;
+    public static final int MEDIA_TYPE_SEGMENTATION = 3;
+    public static final int MEDIA_TYPE_FINAL        = 4;
 
     /** Create a file Uri for saving an image or video */
     public static Uri getOutputMediaFileUri(int type) {
@@ -48,7 +49,9 @@ public class ImageFileUtil {
 	// Create a media file name
 	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 	File mediaFile;
-	if (type == MEDIA_TYPE_IMAGE) {
+	if (type == MEDIA_TYPE_CAMERA) {
+	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "CAM_" + timeStamp + ".jpg");
+	} else if (type == MEDIA_TYPE_IMAGE) {
 	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 	} else if (type == MEDIA_TYPE_SEGMENTATION) {
 	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "SEG_" + "FOCAAND_TEMP" + ".jpg");
