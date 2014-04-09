@@ -19,10 +19,12 @@ public class SettingsActivity extends Activity {
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
         CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
+        CheckBox ckbPreCameraExtraUri = (CheckBox)findViewById(R.id.ckbPreCameraExtraUri);
 
         edtMaxResolution.setText(Integer.toString(Preferences.getInstance().getMaxResolution()));
         edtContraste.setText(Integer.toString(Preferences.getInstance().getContraste()));
         ckbShowButtons.setChecked(Preferences.getInstance().getShowButtons());
+        ckbPreCameraExtraUri.setChecked(Preferences.getInstance().getPreCameraExtraUri());
     }
 
     @Override
@@ -39,24 +41,29 @@ public class SettingsActivity extends Activity {
         int maxResolution = 800;
         int contraste = 50;
         boolean showButtons = true;
+        boolean preCameraExtraUri = false;
 
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
         CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
-        
-        showButtons = ckbShowButtons.isChecked();
-        contraste = Integer.valueOf(edtContraste.getText().toString());
+        CheckBox ckbPreCameraExtraUri = (CheckBox)findViewById(R.id.ckbPreCameraExtraUri);
+
         maxResolution = Integer.valueOf(edtMaxResolution.getText().toString());
+        contraste = Integer.valueOf(edtContraste.getText().toString());
+        showButtons = ckbShowButtons.isChecked();
+        preCameraExtraUri = ckbPreCameraExtraUri.isChecked();
 
         editor.putInt("max_resolution", maxResolution);
         editor.putInt("contraste", contraste);
         editor.putBoolean("show_buttons", showButtons);
+        editor.putBoolean("pre_cam_extra_uri", preCameraExtraUri);
 
         editor.commit();
 
         Preferences.getInstance().setMaxResolution(maxResolution);
         Preferences.getInstance().setContraste(contraste);
         Preferences.getInstance().setShowButtons(showButtons);
+        Preferences.getInstance().setPreCameraExtraUri(preCameraExtraUri);
 
         finish();
     }

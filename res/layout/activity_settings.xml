@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="30dp"
-        android:text="Resolução Máxima" />
+        android:text="@string/resolucao_maxima" />
 
     <EditText
         android:id="@+id/edtResolucaoMax"
@@ -37,7 +37,7 @@
         android:layout_alignLeft="@+id/lblResolucaoMax"
         android:layout_below="@+id/edtResolucaoMax"
         android:layout_marginTop="20dp"
-        android:text="Limiar de Contraste" />
+        android:text="@string/limiar_contraste" />
 
     <EditText
         android:id="@+id/edtContraste"
@@ -58,7 +58,17 @@
         android:layout_alignLeft="@+id/lblResolucaoMax"
         android:layout_below="@+id/edtContraste"
         android:layout_marginTop="20dp"
-        android:text="Exibir botões" />
+        android:text="@string/exibir_botoes" />
+
+    <CheckBox
+        android:id="@+id/ckbPreCameraExtraUri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/ckbEscondeBotoes"
+        android:layout_marginTop="20dp"
+        android:text="@string/pre_camera_extra_uri" />
+    
 
     <Button
         android:id="@+id/btnCancelar"
@@ -69,7 +79,7 @@
         android:layout_marginBottom="47dp"
         android:layout_marginLeft="20dp"
         android:onClick="onCancel"
-        android:text="Cancelar" />
+        android:text="@string/cancelar" />
 
     <Button
         android:id="@+id/btnSalvar"
@@ -80,6 +90,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
         android:onClick="onSave"
-        android:text="Salvar" />
+        android:text="@string/salvar" />
 
 </RelativeLayout>

@@ -29,15 +29,21 @@ public class MainActivity
 	Typeface face = Typeface.createFromAsset(getAssets(), "fonts/OpenDyslexicAlta-Regular.otf");
 	TextView lblTitle = (TextView)findViewById(R.id.lblTitle);
 	lblTitle.setTypeface(face);
+	loadPreferences();
+    }
+    
+    private void loadPreferences() {
 	SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the value for the run counter
         int maxResolution = app_preferences.getInt("max_resolution", 800);
         int contraste = app_preferences.getInt("contraste", 50);
         boolean showButtons = app_preferences.getBoolean("show_buttons", true);
+        boolean preCameraExtraUri = app_preferences.getBoolean("pre_cam_extra_uri", false);
+
         Preferences.getInstance().setMaxResolution(maxResolution);
         Preferences.getInstance().setContraste(contraste);
         Preferences.getInstance().setShowButtons(showButtons);
+        Preferences.getInstance().setPreCameraExtraUri(preCameraExtraUri);
     }
 
     @Override

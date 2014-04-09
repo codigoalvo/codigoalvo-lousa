@@ -7,11 +7,13 @@ public class Preferences {
     private int maxResolution;
     private int contraste;
     private boolean showButtons;
+    private boolean preCameraExtraUri;
 
     private Preferences() {
 	this.setMaxResolution(800);
 	this.setContraste(50);
 	this.setShowButtons(true);
+	this.setPreCameraExtraUri(false);
     }
 
     public static Preferences getInstance() {
@@ -42,6 +44,14 @@ public class Preferences {
 
     public void setContraste(int contraste) {
 	this.contraste = contraste;
+    }
+
+    public boolean getPreCameraExtraUri() {
+	return preCameraExtraUri;
+    }
+
+    public void setPreCameraExtraUri(boolean preCameraExtraUri) {
+	this.preCameraExtraUri = preCameraExtraUri;
     }
    
 }

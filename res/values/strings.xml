@@ -16,7 +16,12 @@
     <string name="please_wait">Esta operação pode demorar! Por favor aguarde...</string>
     <string name="title_activity_settings">Configurações</string>
     <string name="confirmar">Confirmar</string>
+    <string name="salvar">Salvar</string>
     <string name="cancelar">Cancelar</string>
     <string name="mudar">Mudar</string>
+    <string name="exibir_botoes">Exibir botões</string>
+    <string name="limiar_contraste">Limiar de contraste</string>
+    <string name="resolucao_maxima">Resolução máxima</string>
+    <string name="pre_camera_extra_uri">Pré-configurar uri de camera</string>
 
 </resources>
