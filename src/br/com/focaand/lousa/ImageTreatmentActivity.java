@@ -142,7 +142,7 @@ public class ImageTreatmentActivity
 
 	Bitmap colorInverted = colorInvert(contrastBitmap);
 
-	Bitmap bmpGrayscale = toGrayscale(colorInverted);
+	Bitmap bmpGrayscale = grayscale(colorInverted);
 
 	segmentation.recycle();
 	segmentation = null;
@@ -164,6 +164,7 @@ public class ImageTreatmentActivity
      * @param bmpOriginal
      * @return
      */
+    /*/
     public Bitmap toGrayscale(Bitmap bmpOriginal) {        
         int width, height;
         height = bmpOriginal.getHeight();
@@ -182,6 +183,7 @@ public class ImageTreatmentActivity
         System.gc();
         return bmpGrayscale;
     }
+    //*/
 
     public static Bitmap colorInvert(Bitmap bitmapOriginal) {
 	Bitmap output = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), bitmapOriginal.getConfig());
@@ -200,6 +202,39 @@ public class ImageTreatmentActivity
 		B = 255 - Color.blue(pixelColor);
 
 		output.setPixel(x, y, Color.argb(A, R, G, B));
+	    }
+	}
+	bitmapOriginal.recycle();
+	bitmapOriginal = null;
+	System.gc();
+	return output;
+    }
+
+    /**
+     * A simple to grayscale code
+     * @param bitmapOriginal
+     * @return
+     * 
+     */
+    public static Bitmap grayscale(Bitmap bitmapOriginal) {
+	Bitmap output = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), bitmapOriginal.getConfig());
+	int A, R, G, B;
+	int pixelColor;
+	int height = bitmapOriginal.getHeight();
+	int width = bitmapOriginal.getWidth();
+
+	for (int y = 0; y < height; y++) {
+	    for (int x = 0; x < width; x++) {
+		pixelColor = bitmapOriginal.getPixel(x, y);
+		A = Color.alpha(pixelColor);
+
+		R = Color.red(pixelColor);
+		G = Color.green(pixelColor);
+		B = Color.blue(pixelColor);
+		
+		int media = (R + B + G)/3;
+
+		output.setPixel(x, y, Color.argb(A, media, media, media));
 	    }
 	}
 	bitmapOriginal.recycle();
