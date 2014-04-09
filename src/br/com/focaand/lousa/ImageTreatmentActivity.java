@@ -159,6 +159,86 @@ public class ImageTreatmentActivity
 	return bmpGrayscale;
     }
 
+    public static int[][] funcaoExponencial(int imgEntrada[][]) {
+	int largura = imgEntrada.length;
+	int altura = imgEntrada[0].length;
+	int imgSaida[][] = new int[largura][altura];
+
+	int hist[] = new int[256];
+	double lambda = 255 / Math.log(256);
+	for (int i = 0; i < 256; i++) {
+	    hist[i] = (int)Math.exp(i / lambda);
+	}
+
+	for (int x = 0; x < largura; x++) {
+	    for (int y = 0; y < altura; y++) {
+		imgSaida[x][y] = hist[imgEntrada[x][y]];
+	    }
+	}
+
+	return imgSaida;
+    }
+
+    public static int[][] thresholder(int imgEntrada[][]) {
+	// pegando as dimensoes da imagem
+	int largura = imgEntrada.length;
+	int altura = imgEntrada[0].length;
+
+	// vetor do histograma
+	int h[] = new int[256];
+	// calculando o histograma
+	for (int x = 0; x < largura; x++) {
+	    for (int y = 0; y < altura; y++) {
+		h[imgEntrada[x][y]] += 1;
+	    }
+	}
+
+	double wb = 0.0, ub = 0.0, ob = 0.0;
+	double wf = 0.0, uf = 0.0, of = 0.0;
+	double half = 0.0;
+
+	// background
+	for (int i = 0; i < 128; i++) {
+	    half += h[i];
+	    ub += i * h[i];
+	}
+	wb = half / (altura * largura);
+	ub = ub / half;
+	for (int i = 0; i < 128; i++) {
+	    ob += Math.pow(i - ub, 2) * h[i];
+	}
+	ob = ob / half;
+
+	// Foreground
+	for (int i = 128; i <= 255; i++) {
+	    half += h[i];
+	    uf += i * h[i];
+	}
+	wf = half / (altura * largura);
+	uf = uf / half;
+	for (int i = 0; i <= 128; i++) {
+	    of += Math.pow(i - ub, 2) * h[i];
+	}
+	of = ob / half;
+
+	double ow = 0.0, otsu = 0.0;
+	ow = wb * ob + wf * of;
+
+	otsu = wb * (1 - wb) * Math.pow(ub - uf, 2);
+
+	// int otsu = (int)ow;
+	System.out.print(ob);
+	for (int x = 0; x < largura; x++) {
+	    for (int y = 0; y < altura; y++) {
+		if (imgEntrada[x][y] <= 30)
+		    imgEntrada[x][y] = 255;
+		else
+		    imgEntrada[x][y] = 0;
+	    }
+	}
+
+	return imgEntrada;
+    }
     /**
      * A simple toGrayscale test
      * @param bmpOriginal
