@@ -136,6 +136,7 @@ public class ImageTreatmentActivity
     }
 
     private Bitmap processaFiltrosImagem(Bitmap segmentation) {
+	// TODO: Processamento de filtros da imagem deve ser feito aqui
 
 	Bitmap contrastBitmap = adjustedContrast(segmentation, Preferences.getInstance().getContraste());
 
@@ -152,6 +153,8 @@ public class ImageTreatmentActivity
 	colorInverted.recycle();
 	colorInverted = null;
 	System.gc();
+
+//	Bitmap processBitmap = segmentation.copy(Bitmap.Config.ALPHA_8, true); // ALPHA_8 = 8 Bits Grayscale ??? TODO: Testar!
 
 	return bmpGrayscale;
     }
