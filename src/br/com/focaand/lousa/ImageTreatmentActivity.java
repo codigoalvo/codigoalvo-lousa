@@ -19,8 +19,7 @@ import android.widget.Toast;
 import br.com.focaand.lousa.util.ImageFileUtil;
 import br.com.focaand.lousa.util.Preferences;
 
-public class ImageTreatmentActivity
-    extends Activity {
+public class ImageTreatmentActivity extends Activity {
 
     private static final String TAG = "focaand.lousa.ImageTreatmentActivity";
     private String segmentFileName = "";
@@ -37,16 +36,16 @@ public class ImageTreatmentActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_trt_cancelar:
-        	finish();
-                return true;
-            case R.id.action_trt_confirmar:
-        	finalizarTratamento();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+	switch (item.getItemId()) {
+	    case R.id.action_trt_cancelar:
+		finish();
+		return true;
+	    case R.id.action_trt_confirmar:
+		finalizarTratamento();
+		return true;
+	    default:
+		return super.onOptionsItemSelected(item);
+	}
     }
 
     @Override
@@ -75,6 +74,7 @@ public class ImageTreatmentActivity
 		public void run() {
 		    finalPicture = processaFiltrosImagem(segmentation);
 		    runOnUiThread(new Runnable() {
+
 			@Override
 			public void run() {
 			    dialog.dismiss();
@@ -100,8 +100,8 @@ public class ImageTreatmentActivity
 	    Log.d(TAG, "onDestroy");
 	}
 	System.gc();
-        super.onDestroy();
-        Log.d(TAG, "after onDestroy");
+	super.onDestroy();
+	Log.d(TAG, "after onDestroy");
     }
 
     public void onDoneTreatment(View view) {
@@ -138,25 +138,30 @@ public class ImageTreatmentActivity
     private Bitmap processaFiltrosImagem(Bitmap segmentation) {
 	// TODO: Processamento de filtros da imagem deve ser feito aqui
 
-	Bitmap contrastBitmap = adjustedContrast(segmentation, Preferences.getInstance().getContraste());
+	/*
+	 * /
+	 * Bitmap contrastBitmap = adjustedContrast(segmentation, Preferences.getInstance().getContraste());
+	 * Bitmap bmpGrayscale = grayscale(contrastBitmap);
+	 * Bitmap bmpHistogramExponetial = HistogramExponetial(bmpGrayscale);
+	 * //
+	 */
 
-	Bitmap colorInverted = colorInvert(contrastBitmap);
-
-	Bitmap bmpGrayscale = grayscale(colorInverted);
-
+	int[][] pixels = bitmapToGrayscale(segmentation);
 	segmentation.recycle();
 	segmentation = null;
-
-	contrastBitmap.recycle();
-	contrastBitmap = null;
-
-	colorInverted.recycle();
-	colorInverted = null;
 	System.gc();
 
-//	Bitmap processBitmap = segmentation.copy(Bitmap.Config.ALPHA_8, true); // ALPHA_8 = 8 Bits Grayscale ??? TODO: Testar!
+	pixels = funcaoExponencial(pixels);
 
-	return bmpGrayscale;
+	// pixels = thresholder(pixels, Preferences.getInstance().getContraste());
+	// double thersholder = thresholder(pixels);
+
+	pixels = convertToBlackWhite(pixels, Preferences.getInstance().getContraste());
+	Bitmap output = grayscale2Bitmap(pixels);
+
+	// Bitmap processBitmap = segmentation.copy(Bitmap.Config.ALPHA_8, true); // ALPHA_8 = 8 Bits Grayscale ??? TODO: Testar!
+
+	return output;
     }
 
     public static int[][] funcaoExponencial(int imgEntrada[][]) {
@@ -179,24 +184,55 @@ public class ImageTreatmentActivity
 	return imgSaida;
     }
 
-    public static int[][] thresholder(int imgEntrada[][]) {
+    public Bitmap HistogramExponetial(Bitmap bitmapOriginal) {
+	Bitmap output = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), bitmapOriginal.getConfig());
+	int A, R, G, B;
+	int pixelColor;
+	int height = bitmapOriginal.getHeight();
+	int width = bitmapOriginal.getWidth();
+
+	int hist[] = new int[256];
+	double lambda = 255 / Math.log(256);
+	for (int i = 0; i < 256; i++) {
+	    hist[i] = (int)Math.exp(i / lambda);
+	}
+
+	for (int x = 0; x < width; x++) {
+	    for (int y = 0; y < height; y++) {
+		pixelColor = bitmapOriginal.getPixel(x, y);
+
+		A = Color.alpha(pixelColor);
+
+		R = Color.red(pixelColor);
+		G = Color.green(pixelColor);
+		B = Color.blue(pixelColor);
+
+		int media = (R + B + G) / 3;
+
+		output.setPixel(x, y, Color.argb(A, hist[media], hist[media], hist[media]));
+
+	    }
+	}
+
+	return output;
+    }
+
+    public static double thresholder(int pixelsIn[][]) {
 	// pegando as dimensoes da imagem
-	int largura = imgEntrada.length;
-	int altura = imgEntrada[0].length;
+	int largura = pixelsIn.length;
+	int altura = pixelsIn[0].length;
 
 	// vetor do histograma
 	int h[] = new int[256];
 	// calculando o histograma
 	for (int x = 0; x < largura; x++) {
 	    for (int y = 0; y < altura; y++) {
-		h[imgEntrada[x][y]] += 1;
+		h[pixelsIn[x][y]] += 1;
 	    }
 	}
-
 	double wb = 0.0, ub = 0.0, ob = 0.0;
 	double wf = 0.0, uf = 0.0, of = 0.0;
 	double half = 0.0;
-
 	// background
 	for (int i = 0; i < 128; i++) {
 	    half += h[i];
@@ -204,6 +240,7 @@ public class ImageTreatmentActivity
 	}
 	wb = half / (altura * largura);
 	ub = ub / half;
+
 	for (int i = 0; i < 128; i++) {
 	    ob += Math.pow(i - ub, 2) * h[i];
 	}
@@ -221,49 +258,60 @@ public class ImageTreatmentActivity
 	}
 	of = ob / half;
 
+	// Within Class Variance
 	double ow = 0.0, otsu = 0.0;
 	ow = wb * ob + wf * of;
-
 	otsu = wb * (1 - wb) * Math.pow(ub - uf, 2);
 
-	// int otsu = (int)ow;
+	double threshold = ow;
 	System.out.print(ob);
+
+	return threshold;
+    }
+
+    public static int[][] convertToBlackWhite(int pixelsIn[][], double value) {
+	// pegando as dimensoes da imagem
+	int largura = pixelsIn.length;
+	int altura = pixelsIn[0].length;
+	int[][] pixelsOut = new int[largura][altura];
+
 	for (int x = 0; x < largura; x++) {
 	    for (int y = 0; y < altura; y++) {
-		if (imgEntrada[x][y] <= 30)
-		    imgEntrada[x][y] = 255;
+		if (pixelsIn[x][y] <= value)
+		    pixelsOut[x][y] = 255;
 		else
-		    imgEntrada[x][y] = 0;
+		    pixelsOut[x][y] = 0;
 	    }
 	}
 
-	return imgEntrada;
+	return pixelsOut;
     }
+
     /**
      * A simple toGrayscale test
+     * 
      * @param bmpOriginal
      * @return
      */
-    /*/
-    public Bitmap toGrayscale(Bitmap bmpOriginal) {        
-        int width, height;
-        height = bmpOriginal.getHeight();
-        width = bmpOriginal.getWidth();    
 
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        canvas.drawBitmap(bmpOriginal, 0, 0, paint);
-        bmpOriginal.recycle();
-        bmpOriginal = null;
-        System.gc();
-        return bmpGrayscale;
+    public Bitmap toGrayscale(Bitmap bmpOriginal) {
+	int width, height;
+	height = bmpOriginal.getHeight();
+	width = bmpOriginal.getWidth();
+
+	Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+	Canvas canvas = new Canvas(bmpGrayscale);
+	Paint paint = new Paint();
+	ColorMatrix cm = new ColorMatrix();
+	cm.setSaturation(0);
+	ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+	paint.setColorFilter(f);
+	canvas.drawBitmap(bmpOriginal, 0, 0, paint);
+	bmpOriginal.recycle();
+	bmpOriginal = null;
+	System.gc();
+	return bmpGrayscale;
     }
-    //*/
 
     public static Bitmap colorInvert(Bitmap bitmapOriginal) {
 	Bitmap output = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), bitmapOriginal.getConfig());
@@ -292,6 +340,7 @@ public class ImageTreatmentActivity
 
     /**
      * A simple to grayscale code
+     * 
      * @param bitmapOriginal
      * @return
      * 
@@ -311,8 +360,8 @@ public class ImageTreatmentActivity
 		R = Color.red(pixelColor);
 		G = Color.green(pixelColor);
 		B = Color.blue(pixelColor);
-		
-		int media = (R + B + G)/3;
+
+		int media = (R + B + G) / 3;
 
 		output.setPixel(x, y, Color.argb(A, media, media, media));
 	    }
@@ -323,60 +372,103 @@ public class ImageTreatmentActivity
 	return output;
     }
 
-    private Bitmap adjustedContrast(Bitmap bitmapOriginal, double value)
-    {
-        // image size
-        int width = bitmapOriginal.getWidth();
-        int height = bitmapOriginal.getHeight();
-        // create output bitmap
+    public static int[][] bitmapToGrayscale(Bitmap bitmapOriginal) {
+	int A, R, G, B;
+	int pixelColor;
+	int height = bitmapOriginal.getHeight();
+	int width = bitmapOriginal.getWidth();
+	int[][] grayscale = new int[width][height];
 
-        // create a mutable empty bitmap
-        Bitmap bmOut = Bitmap.createBitmap(width, height, bitmapOriginal.getConfig());
+	for (int y = 0; y < height; y++) {
+	    for (int x = 0; x < width; x++) {
+		pixelColor = bitmapOriginal.getPixel(x, y);
+		A = Color.alpha(pixelColor);
 
-        // create a canvas so that we can draw the bmOut Bitmap from source bitmap
-        Canvas canvas = new Canvas();
-        canvas.setBitmap(bmOut);
+		R = Color.red(pixelColor);
+		G = Color.green(pixelColor);
+		B = Color.blue(pixelColor);
 
-        // draw bitmap to bmOut from src bitmap so we can modify it
-        canvas.drawBitmap(bitmapOriginal, 0, 0, new Paint(Color.BLACK));
+		int media = (R + B + G) / 3;
 
+		grayscale[x][y] = media;
+	    }
+	}
+	return grayscale;
+    }
 
-        // color information
-        int A, R, G, B;
-        int pixel;
-        // get contrast value
-        double contrast = Math.pow((100 + value) / 100, 2);
+    public static Bitmap grayscale2Bitmap(int[][] grayscale) {
+	int width = grayscale.length;
+	int height = grayscale[0].length;
+	Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+	for (int x = 0; x < width; x++) {
+	    for (int y = 0; y < height; y++) {
+		output.setPixel(x, y, Color.argb(255, grayscale[x][y], grayscale[x][y], grayscale[x][y]));
+	    }
+	}
+	return output;
+    }
 
-        // scan through all pixels
-        for(int x = 0; x < width; ++x) {
-            for(int y = 0; y < height; ++y) {
-                // get pixel color
-                pixel = bitmapOriginal.getPixel(x, y);
-                A = Color.alpha(pixel);
-                // apply filter contrast for every channel R, G, B
-                R = Color.red(pixel);
-                R = (int)(((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(R < 0) { R = 0; }
-                else if(R > 255) { R = 255; }
+    private Bitmap adjustedContrast(Bitmap bitmapOriginal, double value) {
+	// image size
+	int width = bitmapOriginal.getWidth();
+	int height = bitmapOriginal.getHeight();
+	// create output bitmap
 
-                G = Color.green(pixel);
-                G = (int)(((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(G < 0) { G = 0; }
-                else if(G > 255) { G = 255; }
+	// create a mutable empty bitmap
+	Bitmap bmOut = Bitmap.createBitmap(width, height, bitmapOriginal.getConfig());
 
-                B = Color.blue(pixel);
-                B = (int)(((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(B < 0) { B = 0; }
-                else if(B > 255) { B = 255; }
+	// create a canvas so that we can draw the bmOut Bitmap from source bitmap
+	Canvas canvas = new Canvas();
+	canvas.setBitmap(bmOut);
 
-                // set new pixel color to output bitmap
-                bmOut.setPixel(x, y, Color.argb(A, R, G, B));
-            }
-        }
-        bitmapOriginal.recycle();
-        bitmapOriginal = null;
-        System.gc();
-        return bmOut;
+	// draw bitmap to bmOut from src bitmap so we can modify it
+	canvas.drawBitmap(bitmapOriginal, 0, 0, new Paint(Color.BLACK));
+
+	// color information
+	int A, R, G, B;
+	int pixel;
+	// get contrast value
+	double contrast = Math.pow((100 + value) / 100, 2);
+
+	// scan through all pixels
+	for (int x = 0; x < width; ++x) {
+	    for (int y = 0; y < height; ++y) {
+		// get pixel color
+		pixel = bitmapOriginal.getPixel(x, y);
+		A = Color.alpha(pixel);
+		// apply filter contrast for every channel R, G, B
+		R = Color.red(pixel);
+		R = (int)(((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+		if (R < 0) {
+		    R = 0;
+		} else if (R > 255) {
+		    R = 255;
+		}
+
+		G = Color.green(pixel);
+		G = (int)(((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+		if (G < 0) {
+		    G = 0;
+		} else if (G > 255) {
+		    G = 255;
+		}
+
+		B = Color.blue(pixel);
+		B = (int)(((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+		if (B < 0) {
+		    B = 0;
+		} else if (B > 255) {
+		    B = 255;
+		}
+
+		// set new pixel color to output bitmap
+		bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+	    }
+	}
+	bitmapOriginal.recycle();
+	bitmapOriginal = null;
+	System.gc();
+	return bmOut;
     }
 
 }
