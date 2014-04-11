@@ -18,11 +18,13 @@ public class SettingsActivity extends Activity {
 	setContentView(R.layout.activity_settings);
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
+        CheckBox ckbResultadoPretoBranco = (CheckBox)findViewById(R.id.ckbResultadoPretoBranco);
         CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
         CheckBox ckbPreCameraExtraUri = (CheckBox)findViewById(R.id.ckbPreCameraExtraUri);
 
         edtMaxResolution.setText(Integer.toString(Preferences.getInstance().getMaxResolution()));
         edtContraste.setText(Integer.toString(Preferences.getInstance().getContraste()));
+        ckbResultadoPretoBranco.setChecked(Preferences.getInstance().getResultadoPretoBranco());
         ckbShowButtons.setChecked(Preferences.getInstance().getShowButtons());
         ckbPreCameraExtraUri.setChecked(Preferences.getInstance().getPreCameraExtraUri());
     }
@@ -40,21 +42,25 @@ public class SettingsActivity extends Activity {
 
         int maxResolution = 800;
         int contraste = 50;
+        boolean resultadoPretoBranco = true;
         boolean showButtons = true;
-        boolean preCameraExtraUri = false;
+        boolean preCameraExtraUri = true;
 
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
+        CheckBox ckbResultadoPretoBranco = (CheckBox)findViewById(R.id.ckbResultadoPretoBranco);
         CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
         CheckBox ckbPreCameraExtraUri = (CheckBox)findViewById(R.id.ckbPreCameraExtraUri);
 
         maxResolution = Integer.valueOf(edtMaxResolution.getText().toString());
         contraste = Integer.valueOf(edtContraste.getText().toString());
+        resultadoPretoBranco = ckbResultadoPretoBranco.isChecked();
         showButtons = ckbShowButtons.isChecked();
         preCameraExtraUri = ckbPreCameraExtraUri.isChecked();
 
         editor.putInt("max_resolution", maxResolution);
         editor.putInt("contraste", contraste);
+        editor.putBoolean("resultado_preto_branco", resultadoPretoBranco);
         editor.putBoolean("show_buttons", showButtons);
         editor.putBoolean("pre_cam_extra_uri", preCameraExtraUri);
 
@@ -62,6 +68,7 @@ public class SettingsActivity extends Activity {
 
         Preferences.getInstance().setMaxResolution(maxResolution);
         Preferences.getInstance().setContraste(contraste);
+        Preferences.getInstance().setResultadoPretoBranco(resultadoPretoBranco);
         Preferences.getInstance().setShowButtons(showButtons);
         Preferences.getInstance().setPreCameraExtraUri(preCameraExtraUri);
 

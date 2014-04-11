@@ -73,8 +73,10 @@ public class ImageFiltersUtil {
 	    for (int y = 0; y < height; y++) {
 		if (grayscale[x][y] <= value)
 		    blackWhite[x][y] = 255;
-		else
+		else if (Preferences.getInstance().getResultadoPretoBranco())
 		    blackWhite[x][y] = 0;
+		else
+		    blackWhite[x][y] = 255-grayscale[x][y];
 	    }
 	}
 	return blackWhite;

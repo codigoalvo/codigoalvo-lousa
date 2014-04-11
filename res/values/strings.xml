@@ -23,5 +23,6 @@
     <string name="limiar_contraste">Limiar de contraste</string>
     <string name="resolucao_maxima">Resolução máxima</string>
     <string name="pre_camera_extra_uri">Pré-configurar uri de camera</string>
+    <string name="resultado_preto_branco">Resultado em preto e branco</string>
 
 </resources>

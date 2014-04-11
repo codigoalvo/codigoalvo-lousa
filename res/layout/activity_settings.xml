@@ -59,16 +59,24 @@
         android:layout_below="@+id/edtContraste"
         android:layout_marginTop="20dp"
         android:text="@string/exibir_botoes" />
+    
+    <CheckBox
+        android:id="@+id/ckbResultadoPretoBranco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblResolucaoMax"
+        android:layout_below="@+id/ckbEscondeBotoes"
+        android:layout_marginTop="20dp"
+        android:text="@string/resultado_preto_branco" />
 
     <CheckBox
         android:id="@+id/ckbPreCameraExtraUri"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lblResolucaoMax"
-        android:layout_below="@+id/ckbEscondeBotoes"
+        android:layout_below="@+id/ckbResultadoPretoBranco"
         android:layout_marginTop="20dp"
         android:text="@string/pre_camera_extra_uri" />
-    
 
     <Button
         android:id="@+id/btnCancelar"

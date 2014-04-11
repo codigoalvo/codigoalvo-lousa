@@ -6,14 +6,16 @@ public class Preferences {
 
     private int maxResolution;
     private int contraste;
+    private boolean resultadoPretoBranco;
     private boolean showButtons;
     private boolean preCameraExtraUri;
 
     private Preferences() {
 	this.setMaxResolution(800);
 	this.setContraste(50);
+	this.setResultadoPretoBranco(true);
 	this.setShowButtons(true);
-	this.setPreCameraExtraUri(false);
+	this.setPreCameraExtraUri(true);
     }
 
     public static Preferences getInstance() {
@@ -52,6 +54,14 @@ public class Preferences {
 
     public void setPreCameraExtraUri(boolean preCameraExtraUri) {
 	this.preCameraExtraUri = preCameraExtraUri;
+    }
+
+    public boolean getResultadoPretoBranco() {
+	return resultadoPretoBranco;
+    }
+
+    public void setResultadoPretoBranco(boolean resultadoPretoBranco) {
+	this.resultadoPretoBranco = resultadoPretoBranco;
     }
    
 }

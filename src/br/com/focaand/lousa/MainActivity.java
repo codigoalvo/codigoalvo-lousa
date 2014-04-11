@@ -39,11 +39,13 @@ public class MainActivity
 
         int maxResolution = app_preferences.getInt("max_resolution", 800);
         int contraste = app_preferences.getInt("contraste", 50);
+        boolean resultadoPretoBranco = app_preferences.getBoolean("resultado_preto_branco", true);
         boolean showButtons = app_preferences.getBoolean("show_buttons", true);
-        boolean preCameraExtraUri = app_preferences.getBoolean("pre_cam_extra_uri", false);
+        boolean preCameraExtraUri = app_preferences.getBoolean("pre_cam_extra_uri", true);
 
         Preferences.getInstance().setMaxResolution(maxResolution);
         Preferences.getInstance().setContraste(contraste);
+        Preferences.getInstance().setResultadoPretoBranco(resultadoPretoBranco);
         Preferences.getInstance().setShowButtons(showButtons);
         Preferences.getInstance().setPreCameraExtraUri(preCameraExtraUri);
     }
