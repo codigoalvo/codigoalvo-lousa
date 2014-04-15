@@ -50,13 +50,13 @@ public class ImageFileUtil {
 	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 	File mediaFile;
 	if (type == MEDIA_TYPE_CAMERA) {
-	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "CAM_" + timeStamp + ".jpg");
+	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "CAM_" + timeStamp + ".png");
 	} else if (type == MEDIA_TYPE_IMAGE) {
-	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".png");
 	} else if (type == MEDIA_TYPE_SEGMENTATION) {
-	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "SEG_" + "FOCAAND_TEMP" + ".jpg");
+	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "SEG_" + "FOCAAND_TEMP" + ".png");
 	} else if (type == MEDIA_TYPE_FINAL) {
-	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "FOCA_" + timeStamp + ".jpg");
+	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + "FOCA_" + timeStamp + ".png");
 	} else {
 	    return null;
 	}
