@@ -6,7 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import android.app.Activity;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -16,6 +20,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 public class ImageFileUtil {
 
@@ -177,5 +182,22 @@ public class ImageFileUtil {
 	int x = (int)(inputX * bitmapWidth) / screenWidth;
 	int y = (int)(inputY * bitmapHeight) / screenHeight;
 	return new Point(x, y);
+    }
+
+    /**
+     * @autor http://stackoverflow.com/questions/7607165/how-to-write-build-time-stamp-into-apk
+     */
+    public static String getApkBuildTimeStamp(Activity activity) {
+	String timeStamp = "";
+	try {
+	    ApplicationInfo ai = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), 0);
+	    ZipFile zf = new ZipFile(ai.sourceDir);
+	    ZipEntry ze = zf.getEntry("classes.dex");
+	    long time = ze.getTime();
+	    timeStamp = SimpleDateFormat.getInstance().format(new java.util.Date(time));
+
+	} catch (Exception e) {
+	}
+	return timeStamp;
     }
 }
