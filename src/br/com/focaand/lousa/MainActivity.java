@@ -1,8 +1,7 @@
 package br.com.focaand.lousa;
 
-import br.com.focaand.lousa.util.ImageFileUtil;
-import br.com.focaand.lousa.util.Preferences;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,6 +15,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import br.com.focaand.lousa.util.ImageFileUtil;
+import br.com.focaand.lousa.util.Preferences;
 
 public class MainActivity
     extends Activity {
@@ -116,11 +117,29 @@ public class MainActivity
 	    }
 
 	    if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
-		
-		selectedImagePath = ImageFileUtil.prepareFile(selectedImagePath);
-		Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
-		i.putExtra("photo_path", selectedImagePath);
-		startActivity(i);
+		final String finalSelectedPath = selectedImagePath;
+		final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+		dialog.setTitle(R.string.preparing_image);
+		dialog.setMessage(getResources().getString(R.string.please_wait));
+		dialog.show();
+
+		new Thread(new Runnable() {
+
+		    @Override
+		    public void run() {
+			final String preparedImagePath = ImageFileUtil.prepareFile(finalSelectedPath);
+			runOnUiThread(new Runnable() {
+			    @Override
+			    public void run() {
+				dialog.dismiss();
+				Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
+				i.putExtra("photo_path", preparedImagePath);
+				startActivity(i);
+			    }
+			});
+		    }
+		}).start();
+
 	    } else {
 		Log.d(TAG, "error1 onActivityResult");
 		Toast.makeText(this, R.string.erro_imagem_camera, Toast.LENGTH_SHORT).show();
