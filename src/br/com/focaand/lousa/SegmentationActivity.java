@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -138,6 +140,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 	final String segmentFileName = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_SEGMENTATION).getPath();
 	if (bitmapDraw != null  &&  segmentFileName != null  &&  !segmentFileName.isEmpty()) {
 	    Log.d("focaAndLousa", "Segmentation - before segmentation");
+	    mLockScreenRotation();
 	    final ProgressDialog dialog = new ProgressDialog(SegmentationActivity.this);
 	    dialog.setTitle(R.string.processing_segmentation);
 	    dialog.setMessage(getResources().getString(R.string.please_wait));
@@ -153,6 +156,7 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 			public void run()
 			{
 			    dialog.dismiss();
+			    SegmentationActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 			    Log.d("focaAndLousa", "Segmentation - endSegmentation 2");
 			    saveBitmap(segmented, segmentFileName);
 			}
@@ -326,5 +330,20 @@ public class SegmentationActivity extends Activity  implements OnTouchListener {
 
 	return segmentedPicture;
     }
+
+    /**
+     * @autor: http://eigo.co.uk/labs/lock-screen-orientation-in-android/
+     * // See more at: http://eigo.co.uk/labs/lock-screen-orientation-in-android/#sthash.pbM5Pkf3.dpuf
+     */
+    private void mLockScreenRotation() {   // Stop the screen orientation changing during an event
+	switch (this.getResources().getConfiguration().orientation)     {
+	    case Configuration.ORIENTATION_PORTRAIT:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		break;
+	    case Configuration.ORIENTATION_LANDSCAPE:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		break;
+	}
+    } 
 
 }

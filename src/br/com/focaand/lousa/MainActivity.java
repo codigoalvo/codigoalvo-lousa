@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -118,6 +120,7 @@ public class MainActivity
 
 	    if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
 		final String finalSelectedPath = selectedImagePath;
+		mLockScreenRotation();
 		final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 		dialog.setTitle(R.string.preparing_image);
 		dialog.setMessage(getResources().getString(R.string.please_wait));
@@ -132,6 +135,7 @@ public class MainActivity
 			    @Override
 			    public void run() {
 				dialog.dismiss();
+				MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 				Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
 				i.putExtra("photo_path", preparedImagePath);
 				startActivity(i);
@@ -164,5 +168,20 @@ public class MainActivity
 	Log.d(TAG, "afetr getPath");
 	return cursor.getString(column_index);
     }
+
+    /**
+     * @autor: http://eigo.co.uk/labs/lock-screen-orientation-in-android/
+     * // See more at: http://eigo.co.uk/labs/lock-screen-orientation-in-android/#sthash.pbM5Pkf3.dpuf
+     */
+    private void mLockScreenRotation() {   // Stop the screen orientation changing during an event
+	switch (this.getResources().getConfiguration().orientation)     {
+	    case Configuration.ORIENTATION_PORTRAIT:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		break;
+	    case Configuration.ORIENTATION_LANDSCAPE:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		break;
+	}
+    } 
 
 }

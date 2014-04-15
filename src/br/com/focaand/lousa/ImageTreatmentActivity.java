@@ -2,6 +2,8 @@ package br.com.focaand.lousa;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,7 +59,7 @@ public class ImageTreatmentActivity
 	    segmentFileName = extras.getString("segment_path");
 	    final Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName);
 	    System.out.println("*focaAndLousa* - Loaded imageTreatment segmentFileName: " + segmentFileName);
-
+	    mLockScreenRotation();
 	    final ProgressDialog dialog = new ProgressDialog(ImageTreatmentActivity.this);
 	    dialog.setTitle(R.string.processing_image);
 	    dialog.setMessage(getResources().getString(R.string.please_wait));
@@ -73,6 +75,7 @@ public class ImageTreatmentActivity
 			@Override
 			public void run() {
 			    dialog.dismiss();
+			    ImageTreatmentActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 			    ImageView imageView = (ImageView)findViewById(R.id.imageViewImageTreatment);
 			    imageView.setImageBitmap(finalPicture);
 			}
@@ -147,5 +150,20 @@ public class ImageTreatmentActivity
 
 	return output;
     }
+    
+    /**
+     * @autor: http://eigo.co.uk/labs/lock-screen-orientation-in-android/
+     * // See more at: http://eigo.co.uk/labs/lock-screen-orientation-in-android/#sthash.pbM5Pkf3.dpuf
+     */
+    private void mLockScreenRotation() {   // Stop the screen orientation changing during an event
+	switch (this.getResources().getConfiguration().orientation)     {
+	    case Configuration.ORIENTATION_PORTRAIT:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		break;
+	    case Configuration.ORIENTATION_LANDSCAPE:
+		this.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		break;
+	}
+    } 
 
 }
