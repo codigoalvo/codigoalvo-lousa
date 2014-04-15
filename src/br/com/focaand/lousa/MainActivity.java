@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -19,19 +20,22 @@ import android.widget.Toast;
 public class MainActivity
     extends Activity {
 
-    private static final int SELECT_PICTURE      = 1;
-    private static final int CAPTURE_FROM_CAMERA = 2;
-    private static final int GET_FROM_CAMERA     = 3;
+    private static final String TAG             = "focaand.lousa.MainActivity";
+    private static final int SELECT_PICTURE      = 110;
+    private static final int CAPTURE_FROM_CAMERA = 120;
+    private static final int GET_FROM_CAMERA     = 130;
     private static Uri preCameraExtraUri         = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+	Log.d(TAG, "before onCreate");
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main);
 	Typeface face = Typeface.createFromAsset(getAssets(), "fonts/OpenDyslexicAlta-Regular.otf");
 	TextView lblTitle = (TextView)findViewById(R.id.lblTitle);
 	lblTitle.setTypeface(face);
 	loadPreferences();
+	Log.d(TAG, "after onCreate");
     }
     
     private void loadPreferences() {
@@ -72,7 +76,7 @@ public class MainActivity
 	Intent intent = new Intent();
 	intent.setType("image/*");
 	intent.setAction(Intent.ACTION_GET_CONTENT);
-	startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+	startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_picture)), SELECT_PICTURE);
     }
     
     public void onSettings(View view) {
@@ -81,43 +85,64 @@ public class MainActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	Log.d(TAG, "before onActivityResult");
 	if (resultCode == RESULT_OK) {
 	    String selectedImagePath = null;
 	    if (requestCode == SELECT_PICTURE) {
 		Uri selectedImageUri = data.getData();
-		selectedImagePath = getPath(selectedImageUri);
+		if (selectedImageUri.getPath() == null  ||  selectedImageUri.getPath().isEmpty())
+		    selectedImagePath = getPath(selectedImageUri);
+		else
+		    selectedImagePath = selectedImageUri.getPath();
 	    } else if (requestCode == CAPTURE_FROM_CAMERA) {
 		selectedImagePath = data.getStringExtra("photo_path");
 	    } else if (requestCode == GET_FROM_CAMERA) {
 		Uri selectedImageUri = null;
-		if (data != null &&  data.getData() != null) {
-		    selectedImageUri = data.getData();
-		    if (selectedImageUri != null)
-			selectedImagePath = getPath(selectedImageUri);
-		} else if (preCameraExtraUri != null) {
+		if (preCameraExtraUri != null) {
 		    selectedImageUri = preCameraExtraUri;
-		    selectedImagePath = selectedImageUri.getPath();
+		    if (selectedImageUri.getPath() == null  ||  selectedImageUri.getPath().isEmpty())
+			selectedImagePath = getPath(selectedImageUri);
+		    else
+			selectedImagePath = selectedImageUri.getPath();
+		} else if (data != null &&  data.getData() != null) {
+		    selectedImageUri = data.getData();
+		    if (selectedImageUri != null) {
+			if (selectedImageUri.getPath() == null  ||  selectedImageUri.getPath().isEmpty())
+			    selectedImagePath = getPath(selectedImageUri);
+			else
+			    selectedImagePath = selectedImageUri.getPath();
+		    }
 		}
 	    }
 
 	    if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
-
+		
 		selectedImagePath = ImageFileUtil.prepareFile(selectedImagePath);
 		Intent i = new Intent(MainActivity.this, SegmentationActivity.class);
 		i.putExtra("photo_path", selectedImagePath);
 		startActivity(i);
 	    } else {
-		Toast.makeText(this, R.string.erro_salvar_seg, Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "error1 onActivityResult");
+		Toast.makeText(this, R.string.erro_imagem_camera, Toast.LENGTH_SHORT).show();
 	    }
-	}
+	} else if (resultCode == RESULT_CANCELED) {
+	    Log.d(TAG, "canceled onActivityResult");
+	    Toast.makeText(this, R.string.acao_cancelada_usuario, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d(TAG, "error2 onActivityResult");
+            Toast.makeText(this, R.string.erro_imagem_camera, Toast.LENGTH_SHORT).show();
+        }
+	Log.d(TAG, "after onActivityResult");
     }
 
     public String getPath(Uri uri) {
+	Log.d(TAG, "before getPath");
 	String[] projection = {MediaStore.Images.Media.DATA};
 	Cursor cursor = managedQuery(uri, projection, null, null, null);
 	int column_index = -1;
 	column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 	cursor.moveToFirst();
+	Log.d(TAG, "afetr getPath");
 	return cursor.getString(column_index);
     }
 
