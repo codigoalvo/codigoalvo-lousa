@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import br.com.focaand.lousa.util.ImageFileUtil;
 import br.com.focaand.lousa.util.ImageFiltersUtil;
@@ -22,7 +24,8 @@ public class ImageTreatmentActivity
 
     private static final String TAG             = "focaand.lousa.ImageTreatmentActivity";
     private String              segmentFileName = "";
-    Bitmap                      finalPicture;
+    private Bitmap              finalPicture    = null;
+    private int[][]             pixels          = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,11 +57,31 @@ public class ImageTreatmentActivity
 	if (!Preferences.getInstance().getShowButtons())
 	    hideButtons();
 
+	SeekBar skbThreshold = (SeekBar)findViewById(R.id.skbThreshold);
+	skbThreshold.setProgress(Preferences.getInstance().getContraste());
+	((TextView)findViewById(R.id.lblThreshold)).setText(Integer.toString(skbThreshold.getProgress()));
+
+	skbThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+	    @Override
+	    public void onStopTrackingTouch(SeekBar seekBar) {
+	    }
+	    @Override
+	    public void onStartTrackingTouch(SeekBar seekBar) {
+	    }
+
+	    @Override
+	    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		if (fromUser) {
+		    TextView lblThreshold = (TextView)findViewById(R.id.lblThreshold);
+		    lblThreshold.setText(Integer.toString(progress));
+		    pixels2ImegaView(progress);
+		}
+	    }
+	});
+
 	try {
 	    Bundle extras = getIntent().getExtras();
 	    segmentFileName = extras.getString("segment_path");
-	    final Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName);
-	    System.out.println("*focaAndLousa* - Loaded imageTreatment segmentFileName: " + segmentFileName);
 	    mLockScreenRotation();
 	    final ProgressDialog dialog = new ProgressDialog(ImageTreatmentActivity.this);
 	    dialog.setTitle(R.string.processing_image);
@@ -69,15 +92,17 @@ public class ImageTreatmentActivity
 
 		@Override
 		public void run() {
-		    finalPicture = processaFiltrosImagem(segmentation);
+		    final Bitmap segmentation = ImageFileUtil.getBitmap(segmentFileName);
+		    System.out.println("*focaAndLousa* - Loaded imageTreatment segmentFileName: " + segmentFileName);
+		    finalPicture = Bitmap.createBitmap(segmentation.getWidth(), segmentation.getHeight(), Bitmap.Config.ARGB_8888);
+		    processaFiltrosIniciaisImagem(segmentation);
 		    runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
 			    dialog.dismiss();
 			    ImageTreatmentActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-			    ImageView imageView = (ImageView)findViewById(R.id.imageViewImageTreatment);
-			    imageView.setImageBitmap(finalPicture);
+			    pixels2ImegaView(Preferences.getInstance().getContraste());
 			}
 		    });
 		}
@@ -133,22 +158,21 @@ public class ImageTreatmentActivity
 	imgBtnCancelTreatment.setVisibility(View.GONE);
     }
 
-    private Bitmap processaFiltrosImagem(Bitmap segmentation) {
-	int[][] pixels = ImageFiltersUtil.bitmapToGrayscale(segmentation);
+    private void processaFiltrosIniciaisImagem(Bitmap segmentation) {
+	pixels = ImageFiltersUtil.bitmapToGrayscale(segmentation);
 
 	segmentation.recycle();
 	segmentation = null;
 	System.gc();
 
 	pixels = ImageFiltersUtil.exponentialHistogram(pixels);
+    }
 
-	// double thersholder = ImageFiltersUtil.thresholder(pixels);
-	double thersholder = Preferences.getInstance().getContraste();
-
-	pixels = ImageFiltersUtil.convertToBlackWhite(pixels, thersholder);
-	Bitmap output = ImageFiltersUtil.grayscale2Bitmap(pixels);
-
-	return output;
+    private void pixels2ImegaView(double thersholder) {
+	int[][] imagePixels = ImageFiltersUtil.convertToBlackWhite(pixels, thersholder);
+	ImageFiltersUtil.grayscale2Bitmap(imagePixels, finalPicture);
+	ImageView imageView = (ImageView)findViewById(R.id.imageViewImageTreatment);
+	imageView.setImageBitmap(finalPicture);
     }
     
     /**

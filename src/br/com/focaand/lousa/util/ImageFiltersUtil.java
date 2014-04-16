@@ -45,14 +45,21 @@ public class ImageFiltersUtil {
     public static Bitmap grayscale2Bitmap(int[][] grayscale) {
 	int width = grayscale.length;
 	int height = grayscale[0].length;
-	final int ALPHA = 255;
 	Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+	grayscale2Bitmap(grayscale, output);
+	return output;
+    }
+
+    public static Bitmap grayscale2Bitmap(int[][] grayscale, Bitmap bitmap) {
+	int width = grayscale.length;
+	int height = grayscale[0].length;
+	final int ALPHA = 255;
 	for (int x = 0; x < width; x++) {
 	    for (int y = 0; y < height; y++) {
-		output.setPixel(x, y, Color.argb(ALPHA, grayscale[x][y], grayscale[x][y], grayscale[x][y]));
+		bitmap.setPixel(x, y, Color.argb(ALPHA, grayscale[x][y], grayscale[x][y], grayscale[x][y]));
 	    }
 	}
-	return output;
+	return bitmap;
     }
 
     /**
