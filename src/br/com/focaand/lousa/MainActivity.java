@@ -49,13 +49,11 @@ public class MainActivity
         int contraste = app_preferences.getInt("contraste", 50);
         boolean resultadoPretoBranco = app_preferences.getBoolean("resultado_preto_branco", true);
         boolean showButtons = app_preferences.getBoolean("show_buttons", true);
-        boolean preCameraExtraUri = app_preferences.getBoolean("pre_cam_extra_uri", true);
 
         Preferences.getInstance().setMaxResolution(maxResolution);
         Preferences.getInstance().setContraste(contraste);
         Preferences.getInstance().setResultadoPretoBranco(resultadoPretoBranco);
         Preferences.getInstance().setShowButtons(showButtons);
-        Preferences.getInstance().setPreCameraExtraUri(preCameraExtraUri);
     }
 
     @Override
@@ -80,10 +78,8 @@ public class MainActivity
 	// Intent intent = new Intent(this, CameraActivity.class);
 	// startActivityForResult(intent, CAPTURE_FROM_CAMERA);
 	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	if (Preferences.getInstance().getPreCameraExtraUri()) {
-	    preCameraExtraUri = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_CAMERA);
-	    intent.putExtra(MediaStore.EXTRA_OUTPUT, preCameraExtraUri);
-	}
+	preCameraExtraUri = ImageFileUtil.getOutputMediaFileUri(ImageFileUtil.MEDIA_TYPE_CAMERA);
+	intent.putExtra(MediaStore.EXTRA_OUTPUT, preCameraExtraUri);
 	startActivityForResult(intent, GET_FROM_CAMERA);
     }
 
@@ -117,10 +113,6 @@ public class MainActivity
 			selectedImagePath = getPath(selectedImageUri);
 		    else
 			selectedImagePath = selectedImageUri.getPath();
-		} else if (data != null &&  data.getData() != null) {
-		    selectedImageUri = data.getData();
-		    if (selectedImageUri != null)
-			selectedImagePath = getPath(selectedImageUri);
 		}
 	    }
 
