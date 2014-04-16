@@ -105,10 +105,8 @@ public class MainActivity
 	    String selectedImagePath = null;
 	    if (requestCode == SELECT_PICTURE) {
 		Uri selectedImageUri = data.getData();
-		if (selectedImageUri.getPath() == null  ||  selectedImageUri.getPath().isEmpty())
+		if (selectedImageUri != null)
 		    selectedImagePath = getPath(selectedImageUri);
-		else
-		    selectedImagePath = selectedImageUri.getPath();
 	    } else if (requestCode == CAPTURE_FROM_CAMERA) {
 		selectedImagePath = data.getStringExtra("photo_path");
 	    } else if (requestCode == GET_FROM_CAMERA) {
@@ -121,12 +119,8 @@ public class MainActivity
 			selectedImagePath = selectedImageUri.getPath();
 		} else if (data != null &&  data.getData() != null) {
 		    selectedImageUri = data.getData();
-		    if (selectedImageUri != null) {
-			if (selectedImageUri.getPath() == null  ||  selectedImageUri.getPath().isEmpty())
-			    selectedImagePath = getPath(selectedImageUri);
-			else
-			    selectedImagePath = selectedImageUri.getPath();
-		    }
+		    if (selectedImageUri != null)
+			selectedImagePath = getPath(selectedImageUri);
 		}
 	    }
 
