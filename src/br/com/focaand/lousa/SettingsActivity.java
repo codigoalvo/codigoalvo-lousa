@@ -19,7 +19,7 @@ public class SettingsActivity extends Activity {
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
         CheckBox ckbResultadoPretoBranco = (CheckBox)findViewById(R.id.ckbResultadoPretoBranco);
-        CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
+        CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbExibirBotoes);
 
         edtMaxResolution.setText(Integer.toString(Preferences.getInstance().getMaxResolution()));
         edtContraste.setText(Integer.toString(Preferences.getInstance().getContraste()));
@@ -46,7 +46,7 @@ public class SettingsActivity extends Activity {
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);
         EditText edtContraste = (EditText)findViewById(R.id.edtContraste);
         CheckBox ckbResultadoPretoBranco = (CheckBox)findViewById(R.id.ckbResultadoPretoBranco);
-        CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbEscondeBotoes);
+        CheckBox ckbShowButtons = (CheckBox)findViewById(R.id.ckbExibirBotoes);
 
         maxResolution = Integer.valueOf(edtMaxResolution.getText().toString());
         contraste = Integer.valueOf(edtContraste.getText().toString());

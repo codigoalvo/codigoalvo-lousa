@@ -52,7 +52,7 @@
     </EditText>    
 
     <CheckBox
-        android:id="@+id/ckbEscondeBotoes"
+        android:id="@+id/ckbExibirBotoes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lblResolucaoMax"
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lblResolucaoMax"
-        android:layout_below="@+id/ckbEscondeBotoes"
+        android:layout_below="@+id/ckbExibirBotoes"
         android:layout_marginTop="10dp"
         android:text="@string/resultado_preto_branco" />
 
@@ -73,7 +73,7 @@
         android:id="@+id/btnCancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ckbEscondeBotoes"
+        android:layout_alignLeft="@+id/ckbExibirBotoes"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="20dp"
