@@ -39,8 +39,8 @@ public class SettingsActivity extends Activity {
         SharedPreferences.Editor editor = app_preferences.edit();
 
         int maxResolution = 800;
-        int contraste = 50;
-        boolean resultadoPretoBranco = true;
+        int contraste = 15;
+        boolean resultadoPretoBranco = false;
         boolean showButtons = true;
 
         EditText edtMaxResolution = (EditText)findViewById(R.id.edtResolucaoMax);

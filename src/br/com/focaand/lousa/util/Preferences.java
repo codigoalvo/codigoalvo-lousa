@@ -11,8 +11,8 @@ public class Preferences {
 
     private Preferences() {
 	this.setMaxResolution(800);
-	this.setContraste(50);
-	this.setResultadoPretoBranco(true);
+	this.setContraste(15);
+	this.setResultadoPretoBranco(false);
 	this.setShowButtons(true);
     }
 

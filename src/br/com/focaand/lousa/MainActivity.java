@@ -46,8 +46,8 @@ public class MainActivity
 	SharedPreferences app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         int maxResolution = app_preferences.getInt("max_resolution", 800);
-        int contraste = app_preferences.getInt("contraste", 50);
-        boolean resultadoPretoBranco = app_preferences.getBoolean("resultado_preto_branco", true);
+        int contraste = app_preferences.getInt("contraste", 15);
+        boolean resultadoPretoBranco = app_preferences.getBoolean("resultado_preto_branco", false);
         boolean showButtons = app_preferences.getBoolean("show_buttons", true);
 
         Preferences.getInstance().setMaxResolution(maxResolution);
@@ -75,7 +75,8 @@ public class MainActivity
     }
 
     public void onAbout(View view) {
-	Toast.makeText(this, "APP build version date: "+ImageFileUtil.getApkBuildTimeStamp(this), Toast.LENGTH_SHORT).show();
+	Intent intent = new Intent(this, AboutActivity.class);
+	startActivity(intent);
     }
     
     public void onGetFromCamera(View view) {

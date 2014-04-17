@@ -46,6 +46,11 @@
             android:name="br.com.focaand.lousa.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+       <activity
+            android:name="br.com.focaand.lousa.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
+        
     </application>
 
 </manifest>

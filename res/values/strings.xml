@@ -12,6 +12,7 @@
     <string name="erro_imagem_camera">Erro ao obter imagem da câmera</string>
     <string name="acao_cancelada_usuario">Ação cancelada pelo usuário</string>
     <string name="title_activity_segmentation">Segmentação da imagem</string>
+    <string name="title_activity_about">Sobre</string>
     <string name="erro_salvar_seg">Erro ao salvar arquivo de segmentação</string>
     <string name="ok_salvar_seg">Arquivo temporario de segmentacao salvo com sucesso!</string>
     <string name="processing_segmentation">Processando segmentação</string>
@@ -23,11 +24,14 @@
     <string name="salvar">Salvar</string>
     <string name="cancelar">Cancelar</string>
     <string name="mudar">Mudar</string>
+    <string name="fechar">Fechar</string>
     <string name="exibir_botoes">Exibir botões</string>
     <string name="limiar_contraste">Limiar de contraste</string>
     <string name="resolucao_maxima">Resolução máxima</string>
     <string name="pre_camera_extra_uri">Pré-configurar uri de camera</string>
     <string name="resultado_preto_branco">Resultado em preto e branco</string>
     <string name="sobre">Build info</string>
+    <string name="focaand_email">focaand@gmail.com</string>
+    <string name="focaand_site">www.focaand.com.br</string>
 
 </resources>
