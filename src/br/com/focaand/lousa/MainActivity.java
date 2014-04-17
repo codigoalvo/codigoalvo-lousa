@@ -74,6 +74,10 @@ public class MainActivity
 	}
     }
 
+    public void onAbout(View view) {
+	Toast.makeText(this, "APP build version date: "+ImageFileUtil.getApkBuildTimeStamp(this), Toast.LENGTH_SHORT).show();
+    }
+    
     public void onGetFromCamera(View view) {
 	// Intent intent = new Intent(this, CameraActivity.class);
 	// startActivityForResult(intent, CAPTURE_FROM_CAMERA);

@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50sp" />
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/lblCompany"
@@ -27,37 +27,57 @@
         android:layout_alignParentRight="true"
         android:text="@string/company_name" />
 
-    <ImageButton
-        android:id="@+id/imgBtnSettings"
+    <TextView
+        android:id="@+id/txtCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imgBtnFromGalery"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/imgBtnFromGalery"
-        android:contentDescription="@string/action_settings"
-        android:onClick="onSettings"
-        android:src="@drawable/ic_menu_settings" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="."
+        android:visibility="invisible" />
 
     <ImageButton
         android:id="@+id/imgBtnFromGalery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lblTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/txtCenter"
         android:contentDescription="@string/from_galery"
         android:onClick="onGetFromGalery"
         android:src="@drawable/ic_menu_galeria" />
 
     <ImageButton
+        android:id="@+id/imgBtnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/txtCenter"
+        android:contentDescription="@string/action_settings"
+        android:onClick="onSettings"
+        android:src="@drawable/ic_menu_settings" />
+
+    <ImageButton
         android:id="@+id/imgBtnFromCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imgBtnFromGalery"
+        android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
         android:layout_toLeftOf="@+id/imgBtnFromGalery"
         android:contentDescription="@string/from_camera"
         android:onClick="onGetFromCamera"
         android:src="@drawable/ic_menu_camera" />
+
+    <ImageButton
+        android:id="@+id/imgBtnAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/imgBtnSettings"
+        android:contentDescription="@string/action_settings"
+        android:onClick="onAbout"
+        android:src="@drawable/ic_menu_sobre" />
 
 </RelativeLayout>
