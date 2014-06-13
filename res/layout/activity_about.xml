@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="Sobre focaAnd:"
+                android:text="@string/sobre_focaand_lbl"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -30,15 +30,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="focaAnd, um grupo criado com o propósito de desenvolver o TCC/IC (Trabalho de Colclusão de Curso / Iniciação Científica) do curso de Bacharelado em Ciência da Computação (Formandos de 2014).
-        Composto pelos alunos: Cássio Reinaldo Amaral, Eduardo Rodrigues Sousa e Vitor Rossetto e orientado pelo professor Wonder Alexandre (Professor de Computação Gráfica)" />
+                android:text="@string/sobre_focaand_msg" />
 
             <TextView
                 android:id="@+id/lblSobreLousa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Sobre Lousa:"
+                android:text="@string/sobre_lousa_lbl"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -46,10 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="A idéia do app lousa surgiu da necessidade dos componentes do grupo. Pois desde o início do curso arquivamos a matéria passada pelos professores em sala de aula através de fotos tiradas do quadro verde de giz (lousa) com nossos celulares.
-        Estas fotos além de ocupar muito espaço, não são conveniêntes a serem impressas ou visualizadas em tablets por exemplo. Aí surgiu a idéia de criarmos um aplicativo para aplicar filtros nas fotos tiradas, invertendo as cores e transformando a imagem final em algo próximo de um texto em tons de cinza em um fundo branco.
-        Como nosso projeto caminhou para uma Iniciação Científica e não um simples TCC, fomos orientados pelo professor à direcionar nosso app como uma aplicação prática de um projeto de segmentação de imagens de outra iniciação científica.
-        A segmentação de imagem teria o papel de eliminar das fotos partes não interessantes, como parede, moldura da lousa, etc, através de seleção de background/foreground desenhando imagens marcadoras sobre a foto." />
+                android:text="@string/sobre_lousa_msg" />
 
             <TextView
                 android:id="@+id/lblEmail"
