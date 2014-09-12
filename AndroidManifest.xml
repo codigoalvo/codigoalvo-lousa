@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.focaand.lousa"
+    package="br.com.codigoalvo.lousa"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme" 
         android:largeHeap="true" >
         <activity
-            android:name="br.com.focaand.lousa.MainActivity"
+            android:name="br.com.codigoalvo.lousa.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,23 +32,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="br.com.focaand.lousa.CameraActivity"
+            android:name="br.com.codigoalvo.lousa.CameraActivity"
             android:label="@string/from_camera" >
         </activity>
         <activity
-            android:name="br.com.focaand.lousa.ImageTreatmentActivity"
+            android:name="br.com.codigoalvo.lousa.ImageTreatmentActivity"
             android:label="@string/image_treatment" >
         </activity>
         <activity
-            android:name="br.com.focaand.lousa.SegmentationActivity"
+            android:name="br.com.codigoalvo.lousa.SegmentationActivity"
             android:label="@string/title_activity_segmentation" >
         </activity>
         <activity
-            android:name="br.com.focaand.lousa.SettingsActivity"
+            android:name="br.com.codigoalvo.lousa.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
        <activity
-            android:name="br.com.focaand.lousa.AboutActivity"
+            android:name="br.com.codigoalvo.lousa.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
         

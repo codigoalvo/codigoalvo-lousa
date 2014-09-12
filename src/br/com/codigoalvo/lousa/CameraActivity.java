@@ -1,4 +1,4 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,8 +25,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import br.com.focaand.lousa.util.CameraUtil;
-import br.com.focaand.lousa.util.ImageFileUtil;
+import br.com.codigoalvo.lousa.util.CameraUtil;
+import br.com.codigoalvo.lousa.util.ImageFileUtil;
+import br.com.focaand.lousa.R;
 
 /**
  * @author Cassio Reinaldo Amaral source:

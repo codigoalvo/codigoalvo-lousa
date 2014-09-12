@@ -1,5 +1,6 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
+import br.com.focaand.lousa.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

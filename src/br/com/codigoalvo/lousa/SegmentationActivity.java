@@ -1,4 +1,4 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
 import java.util.HashMap;
 
@@ -7,8 +7,9 @@ import tcc.IGrayScaleImage;
 import tcc.operators.MorphlogicalOperators;
 import tcc.operators.OperatorsByIFT;
 import tcc.utils.AdjacencyRelation;
-import br.com.focaand.lousa.util.ImageFileUtil;
-import br.com.focaand.lousa.util.Preferences;
+import br.com.codigoalvo.lousa.util.ImageFileUtil;
+import br.com.codigoalvo.lousa.util.Preferences;
+import br.com.focaand.lousa.R;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;

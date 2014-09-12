@@ -1,4 +1,4 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
 import java.io.IOException;
 import java.util.List;

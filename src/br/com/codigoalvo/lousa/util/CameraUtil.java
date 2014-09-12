@@ -1,4 +1,4 @@
-package br.com.focaand.lousa.util;
+package br.com.codigoalvo.lousa.util;
 
 import java.util.List;
 

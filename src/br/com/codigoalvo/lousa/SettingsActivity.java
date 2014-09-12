@@ -1,6 +1,7 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
-import br.com.focaand.lousa.util.Preferences;
+import br.com.codigoalvo.lousa.util.Preferences;
+import br.com.focaand.lousa.R;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;

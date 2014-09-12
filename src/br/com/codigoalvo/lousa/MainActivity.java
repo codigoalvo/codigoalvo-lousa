@@ -1,4 +1,4 @@
-package br.com.focaand.lousa;
+package br.com.codigoalvo.lousa;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,8 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import br.com.focaand.lousa.util.ImageFileUtil;
-import br.com.focaand.lousa.util.Preferences;
+import br.com.codigoalvo.lousa.util.ImageFileUtil;
+import br.com.codigoalvo.lousa.util.Preferences;
+import br.com.focaand.lousa.R;
 
 public class MainActivity
     extends Activity {

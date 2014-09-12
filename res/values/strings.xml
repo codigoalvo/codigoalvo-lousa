@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Lousa</string>
-    <string name="company_name">focaAnd</string>
+    <string name="app_name">codigoalvo lousa</string>
+    <string name="app_short_name">lousa</string>
+    <string name="company_name">codigoalvo</string>
     <string name="action_settings">Configurações</string>
     <string name="from_camera">Adquirir imagem à partir da câmera</string>
     <string name="from_galery">Adquirir imagem à partir da galeria</string>
@@ -31,8 +32,8 @@
     <string name="pre_camera_extra_uri">Pré-configurar uri de camera</string>
     <string name="resultado_preto_branco">Resultado em preto e branco</string>
     <string name="sobre">Build info</string>
-    <string name="focaand_email">focaand@gmail.com</string>
-    <string name="focaand_site">www.focaand.com.br</string>
+    <string name="focaand_email">codigoalvo@gmail.com</string>
+    <string name="focaand_site">www.codigoalvo.com.br</string>
     <string name="sobre_focaand_lbl">Sobre focaAnd:</string>
     <string name="sobre_focaand_msg">focaAnd, um grupo criado com o propósito de desenvolver o TCC/IC (Trabalho de Colclusão de Curso / Iniciação Científica) do curso de Bacharelado em Ciência da Computação (Formandos de 2014).
         Composto pelos alunos: Cássio Reinaldo Amaral, Eduardo Rodrigues Sousa e Vitor Rossetto e orientado pelo professor Wonder Alexandre (Professor de Computação Gráfica)</string>
